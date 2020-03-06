@@ -1,0 +1,91 @@
+{
+  "project_info": {
+    "project_number": "27370984870",
+    "firebase_url": "https://student-95e91.firebaseio.com",
+    "project_id": "student-95e91",
+    "storage_bucket": "student-95e91.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27370984870:android:b1ec3c261c23d4203ceb67",
+        "android_client_info": {
+          "package_name": "com.example.day12_login"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "27370984870-h874uk3o93938i7qsm0i7t2j5dst665i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.day12_login",
+            "certificate_hash": "8afd1e9779f6399d0332880a5f7527c3899b56cd"
+          }
+        },
+        {
+          "client_id": "27370984870-uo6tnlmaj79lc16dceutkehf0hbi162d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAC417xQQLphlFNXX8ZSYkHOaIEXK98emI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "27370984870-uo6tnlmaj79lc16dceutkehf0hbi162d.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "27370984870-acjfmlb551lol5uibvvi8h7os5tf47de.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.day12Login"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27370984870:android:6afdcb5fc46971a23ceb67",
+        "android_client_info": {
+          "package_name": "com.studentNet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "27370984870-uo6tnlmaj79lc16dceutkehf0hbi162d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAC417xQQLphlFNXX8ZSYkHOaIEXK98emI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "27370984870-uo6tnlmaj79lc16dceutkehf0hbi162d.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "27370984870-acjfmlb551lol5uibvvi8h7os5tf47de.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.day12Login"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

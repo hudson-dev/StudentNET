@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:day12_login/Animation/FadeAnimation.dart';
 import 'package:day12_login/Screens/loginPage.dart';
+import 'package:day12_login/services/auth.dart';
+import 'package:day12_login/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -80,8 +82,8 @@ class _RegisterPageState extends State<RegisterPage> {
 	                    )),
 	                  ),
                     Positioned(
-                      right: 360,
-                      top: 40,
+                      right: 350,
+                      top: 30,
                         child: FadeAnimation( 
                           1.2,
                             IconButton(
@@ -183,7 +185,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       )
 	                  )),
-	                  SizedBox(height: 60,),
+	                  SizedBox(height: 40,),
 	                  FadeAnimation(2, 
 	                  SizedBox(
                       height: 50,
@@ -228,18 +230,22 @@ class _RegisterPageState extends State<RegisterPage> {
     if(formState.validate()) {
       formState.save();
       try {
-        final databaseReference = Firestore.instance;
-        FirebaseUser user = 
-        (await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _email, password: _password)).user;
-        //user.sendEmailVerification();
-        // Display for the user that we sent verification
-        //Navigator.of(context).pop();
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home(user:user)));
-        await databaseReference.collection("users")
-      .document(user.uid)
-      .setData({
-        'name': _name,
-      });
+        
+      //   final databaseReference = Firestore.instance;
+      //   FirebaseUser user = 
+      //   (await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _email, password: _password)).user;
+      //   //user.sendEmailVerification();
+      //   // Display for the user that we sent verification
+      //   //Navigator.of(context).pop();
+        
+      //   await databaseReference.collection("active")
+      // .document(user.uid)
+      // .setData({
+      //   'name': _name,
+      // });
+      AuthService auth = new AuthService();
+      Future user = auth.registerWithEmailAndPassword( _email, _password);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
       }catch(e) {
         print('*************ERROR MESSAGE*************');
         print(e);
