@@ -108,7 +108,7 @@ class Choose extends StatelessWidget {
 	                          // ),
 	                          child: RaisedButton(
                               onPressed: () {
-                                 Navigator.pushReplacementNamed(context, "/login");
+                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
                               },
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
                               child: Ink(
@@ -128,7 +128,7 @@ class Choose extends StatelessWidget {
 	                          padding: EdgeInsets.all(8.0),
 	                          child: RaisedButton(
                               onPressed: () {
-                                Navigator.pushReplacementNamed(context, "/register");
+                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegisterPage()));
                               },
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
                               child: Container(

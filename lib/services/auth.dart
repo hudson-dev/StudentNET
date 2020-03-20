@@ -1,22 +1,28 @@
 import 'package:day12_login/Models/user.dart';
 import 'package:day12_login/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
-class AuthService{
+class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Database database = new Database();
 
   //convert the firebase user obj into User obj
-  User _getUser(FirebaseUser user){
-    return user != null ? User(uid:user.uid) : null;
+  User _getUser(FirebaseUser user) {
+    return user != null ? User(uid: user.uid) : null;
   }
 
   Database get getDatabase {
     return database;
   }
 
-  //Start a stream for users to set the state
-  Stream<User> get user{
+  Future<FirebaseUser> get currentUser async {
+    return await _auth.currentUser();
+
+  }
+
+
+  Stream<User> get user {
     return _auth.onAuthStateChanged.map(_getUser);
   }
 
@@ -33,13 +39,15 @@ class AuthService{
   }
 
   //Method to Register in with email & password
-  Future registerWithEmailAndPassword(String email, String password)async{
+  Future registerWithEmailAndPassword(String email, String password, String name) async {
     try {
-      AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      AuthResult result = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
       FirebaseUser user = result.user;
       User val = _getUser(user);
       database = Database(uid: val.uid);
-      await Database(uid : user.uid).updateUserData(false, false, false, false, false, false);
+      await Database(uid: user.uid)
+          .updateUserData(false, false, false, false, false, name, 0);
       return val;
     } catch (e) {
       print(e.toString());
@@ -50,10 +58,12 @@ class AuthService{
   //Method to SignIn with email & password
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
-      AuthResult result = await _auth.signInWithEmailAndPassword(email:  email, password:  password);
+      AuthResult result = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
       FirebaseUser user = result.user;
       User val = _getUser(user);
       database = Database(uid: val.uid);
+      print(val);
       return val;
     } catch (e) {
       print((e.toString()));
@@ -61,9 +71,8 @@ class AuthService{
     }
   }
 
-
   //Method to Sign Out
-  Future signOut() async{
+  Future signOut() async {
     try {
       return await _auth.signOut();
     } catch (e) {
@@ -73,3 +82,5 @@ class AuthService{
   }
 
 }
+
+

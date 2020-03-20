@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:day12_login/Animation/FadeAnimation.dart';
+import 'package:day12_login/Screens/choose.dart';
 import 'package:day12_login/Screens/loginPage.dart';
 import 'package:day12_login/services/auth.dart';
 import 'package:day12_login/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'home.dart';
+import 'quiz.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -23,7 +24,8 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-      	child: Container(
+      	child: SafeArea(
+          child: Container(
 	        child: Column(
 	          children: <Widget>[
 	            Container(
@@ -90,7 +92,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             icon: Icon(Icons.arrow_back),
                             color: Colors.black,
                             onPressed: () {
-                            Navigator.pushReplacementNamed(context, "/choose");
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Choose()));
                           }
                       ),
                         ),
@@ -220,6 +222,7 @@ class _RegisterPageState extends State<RegisterPage> {
 	          ],
 	        ),
 	      ),
+      	),
       )
     );
     
@@ -231,21 +234,12 @@ class _RegisterPageState extends State<RegisterPage> {
       formState.save();
       try {
         
-      //   final databaseReference = Firestore.instance;
-      //   FirebaseUser user = 
-      //   (await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _email, password: _password)).user;
-      //   //user.sendEmailVerification();
-      //   // Display for the user that we sent verification
-      //   //Navigator.of(context).pop();
-        
-      //   await databaseReference.collection("active")
-      // .document(user.uid)
-      // .setData({
-      //   'name': _name,
-      // });
       AuthService auth = new AuthService();
-      Future user = auth.registerWithEmailAndPassword( _email, _password);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
+      dynamic user = auth.registerWithEmailAndPassword( _email, _password, _name);
+      if(user == null) {
+        return false;   
+      } 
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Quiz()));
       }catch(e) {
         print('*************ERROR MESSAGE*************');
         print(e);

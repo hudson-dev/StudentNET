@@ -1,59 +1,101 @@
-import 'package:day12_login/Animation/FadeAnimation.dart';
-//import 'package:day12_login/Models/user.dart';
-import 'package:day12_login/Screens/loginPage.dart';
-import 'package:day12_login/Screens/registerPage.dart';
-import 'package:day12_login/services/database.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:day12_login/Communication/chat.dart';
 import 'package:day12_login/Models/user.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:day12_login/main.dart';
+import 'package:day12_login/Screens/choose.dart';
+import 'package:day12_login/Screens/grade.dart';
+import 'package:day12_login/services/auth.dart';
+import 'package:day12_login/services/database.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class Home extends StatefulWidget {
+void main() => runApp(Home());
 
-
-  @override
-  _HomeState createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-
-  // DocumentReference uidCollection;
-  // Database database = new Database(uid: 'NCPMKhL7AmNCJwYxzvs7sThy9d72');
+/// This Widget is the main application widget.
+class Home extends StatelessWidget {
+  static const String _title = 'Flutter Code Sample';
 
   @override
   Widget build(BuildContext context) {
 
-    bool science, math, language, writing, reading;
-
     User user = Provider.of<User>(context);
-    final userData = Provider.of<UserData>(context) ?? [];
-    //bool value = userData.science;
-    // DocumentReference uidCollection = Firestore.instance.collection('active').document('NCPMKhL7AmNCJwYxzvs7sThy9d72');
-    // Stream<DocumentSnapshot> data = Firestore.instance.collection('active').document('NCPMKhL7AmNCJwYxzvs7sThy9d72').snapshots();
+    bool math, science, writing, language, reading;
+    UserData userData;
+    String name;
 
     
-    //Stream<UserData> userData = database.userData;
-
-    return MaterialApp(
+    return StreamBuilder<UserData>(
+      stream: Database(uid: user.uid).userData,
+        builder: (context, snapshot) {
+ 
+        // var userSnapshot = Provider.of<UserData>(context);
+ 
+          if (snapshot.hasData) {
+            userData = snapshot.data;
+  
+            math = userData.math;
+            science = userData.science;
+            writing = userData.writing;
+            language = userData.language;
+            reading = userData.reading; 
+            name = userData.name;
+ 
+            
+           return MaterialApp(
+      title: _title,
       home: Scaffold(
-        body: Center(
-          child: Column(
-            children: <Widget>[
-              Text(user.uid),
-              
-              Text(userData.toString()),
-              //Text(user.uid),
+        
+        body: Container(
+          color: Colors.grey[200],
+          child: SafeArea(
+            child: Column(
+              children: <Widget>[
+                Row(
+                 
+                  children: <Widget>[
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_back),
+                        color: Colors.black,
+                        onPressed: () async{
+                          AuthService auth = new AuthService();
+                          await auth.signOut();
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Choose()));
+                      }
+                      ),
+                  ),
 
-            ],
+                  Padding(
+                    padding: const EdgeInsets.only(left: 65),
+                    child: Text(
+                      "Welcome ${name}",
+                      style: TextStyle(fontSize: 30)
+                        ),
+                  ),
+                    ],
+                  ),
+              
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat()));
+                  },
+                  child: Text("Let's chat!")
+                ),
+                Center(
+                  child: Text(
+                    "UID: ${user.uid}",
+                    style: TextStyle(fontSize: 30)
+                    ),
+                ),
+                
+                
+              ] 
+              ),
           ),
         ),
-      ),
-    );
+        ),
+      );
+    }
+  });  
   }
 }
+

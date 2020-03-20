@@ -9,7 +9,7 @@ class Database {
   Future<UserData> value;
 
 // MSWLR
-  Future updateUserData(bool math, bool, science, bool writing, bool language, bool reading) async{
+  Future updateUserData(bool math, bool science, bool writing, bool language, bool reading, String name, int grade) async{
     uidCollection = Firestore.instance.collection("active").document(uid);
     
     return await uidCollection.setData(
@@ -19,6 +19,16 @@ class Database {
       "writing" : writing,
       "language" : language,
       "reading" : reading,
+      "name" : name,
+      "grade" : grade,
+    });
+  }
+
+  Future updateData(String name, String value) async{
+    uidCollection = Firestore.instance.collection("active").document(uid);
+    return await uidCollection.setData(
+    {
+      name : value.toString(),
     });
   }
   //convert the firebase user obj into User obj
@@ -35,6 +45,8 @@ class Database {
       writing: snapshot.data["writing"],
       language: snapshot.data["language"],
       reading: snapshot.data["reading"],
+      name: snapshot.data["name"],
+      grade: snapshot.data["grade"],
     );
   }
 
@@ -57,12 +69,20 @@ class Database {
     // return value;
 
     return uidCollection.snapshots().map(_userDataFromSnapshot);
+    // are you getting a value here? There might be a problem here.
+    // im not sure
+    // can we call 
+    //let me test first. not sure if the value uidCollection is being passed to userDataFromSnapshot
+    // I cant run the code via Liveshare
+    // make the changes and i will run it in my emulator and tell you the re
 
     //return Firestore.instance.collection('active').document(uid).get().then((value) =>  (_userDataFromSnapshot(value)));;
     // need to Somehow put "value" into the stream of data
     
   }
 }
+
+
 
    
 
