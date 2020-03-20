@@ -1,14 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:day12_login/Animation/FadeAnimation.dart';
-import 'package:day12_login/Models/user.dart';
 import 'package:day12_login/Screens/choose.dart';
 import 'package:day12_login/Screens/loginPage.dart';
 import 'package:day12_login/services/auth.dart';
 import 'package:day12_login/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:provider/provider.dart';
 
 import 'quiz.dart';
 
@@ -233,58 +230,16 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<bool> signUp() async{
     
     final formState = _formKey.currentState;
-    User user = Provider.of<User>(context);
-    bool math, science, writing, language, reading;
-    UserData userData;
-    String name, photoUrl;
-
     if(formState.validate()) {
       formState.save();
       try {
         
-      
-      StreamBuilder<UserData>(
-      stream: Database(uid: user.uid).userData,
-        builder: (context, snapshot) {
-
-          if (snapshot.hasData) {
-           userData = snapshot.data;
- 
-            math = userData.math;
-            science = userData.science;
-            writing = userData.writing;
-            language = userData.language;
-            reading = userData.reading; 
-            name = userData.name;
-            photoUrl = userData.photoUrl;
- 
-            AuthService auth = new AuthService();
-            dynamic user1 = auth.registerWithEmailAndPassword( _email, _password, _name);
-            final QuerySnapshot result =
-              getDocuments(user.uid) as QuerySnapshot;
-            final List <DocumentSnapshot> documents = result.documents;
-            Firestore.instance.collection('users').document(user.uid).setData(
-                { 'nickname': name, 'photoUrl': photoUrl, 'id': user.uid });
-            // if(user1 == null) {
-            //   return false;   
-            // } 
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Quiz()));
-            
-          }
-          else {
-            return Container(
-              color: Colors.cyan[900],
-              child: Center(
-                child: SpinKitWave(
-                  color: Colors.white,
-                  size: 120
-                ),
-              ),
-            );
-          }
-        });
-      
-      
+      AuthService auth = new AuthService();
+      dynamic user = auth.registerWithEmailAndPassword( _email, _password, _name);
+      if(user == null) {
+        return false;   
+      } 
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Quiz()));
       }catch(e) {
         print('*************ERROR MESSAGE*************');
         print(e);
@@ -293,11 +248,5 @@ class _RegisterPageState extends State<RegisterPage> {
     }
     return false;
   } 
-}
-
-Future<QuerySnapshot> getDocuments(String uid) async {
-  final QuerySnapshot result =
-    await Firestore.instance.collection('users').where('id', isEqualTo: uid).getDocuments();
-  return result;
 }
       

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:day12_login/Animation/FadeAnimation.dart';
 import 'package:day12_login/Screens/choose.dart';
 import 'package:day12_login/Screens/home.dart';
@@ -6,9 +5,6 @@ import 'package:day12_login/Screens/quiz.dart';
 import 'package:day12_login/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -20,10 +16,6 @@ class _LoginPageState extends State<LoginPage> {
   String _email, _password;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String incorrect = " ";
-  final GoogleSignIn googleSignIn = GoogleSignIn();
-  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  SharedPreferences prefs;
-  FirebaseUser currentUser;
 
   @override
   Widget build(BuildContext context) {
@@ -172,9 +164,9 @@ class _LoginPageState extends State<LoginPage> {
 	                    ),
 	                  )
 	                    )),
-	                SizedBox(height: 10),
+	                SizedBox(height: 20),
 	                FadeAnimation(1.5, Text(incorrect, style: TextStyle(color: Colors.red),)),
-	                  
+	                    SizedBox(height: 20,),
 	                    FadeAnimation(2, 
 	                    SizedBox(
 	                  height: 50,
@@ -197,34 +189,6 @@ class _LoginPageState extends State<LoginPage> {
 	                  ),
 	                      child: Center(
 	                        child: Text("Login", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-	                    )
-	                  ),
-	                        ),
-	                    ),
-	                    ),
-                      SizedBox(height: 10),
-                      FadeAnimation(2, 
-	                    SizedBox(
-	                  height: 50,
-	                  child: FlatButton(
-	                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
-	                  
-	                  onPressed: () async {
-	                    signInWithGoogle();
-	                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
-	                  },
-	                  
-
-	                  child: Ink(
-	                    decoration: const BoxDecoration(
-	                    gradient: LinearGradient(
-	                    colors: <Color>[Color.fromRGBO(143, 148, 251, 1),
-	                            Color.fromRGBO(143, 148, 251, .6),],
-	                    ),
-	                    borderRadius: BorderRadius.all(Radius.circular(80.0)),
-	                  ),
-	                      child: Center(
-	                        child: Text("Login with Google", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
 	                    )
 	                  ),
 	                        ),
@@ -265,58 +229,6 @@ class _LoginPageState extends State<LoginPage> {
     }
     return false;
   } 
-
-  Future<Null> signInWithGoogle() async {
-    prefs = await SharedPreferences.getInstance();
-
-   
-
-    GoogleSignInAccount googleUser = await googleSignIn.signIn();
-    GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    FirebaseUser firebaseUser = (await firebaseAuth.signInWithCredential(credential)).user;
-
-    if (firebaseUser != null) {
-      // Check is already sign up
-      final QuerySnapshot result =
-          await Firestore.instance.collection('users').where('id', isEqualTo: firebaseUser.uid).getDocuments();
-      final List<DocumentSnapshot> documents = result.documents;
-      if (documents.length == 0) {
-        // Update data to server if new user
-        Firestore.instance.collection('users').document(firebaseUser.uid).setData({
-          'nickname': firebaseUser.displayName,
-          'photoUrl': firebaseUser.photoUrl,
-          'id': firebaseUser.uid,
-          'createdAt': DateTime.now().millisecondsSinceEpoch.toString(),
-          'chattingWith': null
-        });
-
-        // Write data to local
-        currentUser = firebaseUser;
-        await prefs.setString('id', currentUser.uid);
-        await prefs.setString('nickname', currentUser.displayName);
-        await prefs.setString('photoUrl', currentUser.photoUrl);
-      } else {
-        // Write data to local
-        await prefs.setString('id', documents[0]['id']);
-        await prefs.setString('nickname', documents[0]['nickname']);
-        await prefs.setString('photoUrl', documents[0]['photoUrl']);
-        await prefs.setString('aboutMe', documents[0]['aboutMe']);
-      }
-      Fluttertoast.showToast(msg: "Sign in success");
-      
-
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Quiz()));
-    } else {
-      Fluttertoast.showToast(msg: "Sign in fail");
-      
-    }
-  }
 
   
 }
