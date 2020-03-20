@@ -76,7 +76,7 @@ class Home extends StatelessWidget {
               
                 FlatButton(
                   onPressed: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat()));
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Choose()));
                   },
                   child: Text("Let's chat!")
                 ),
