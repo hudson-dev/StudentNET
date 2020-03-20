@@ -1,4 +1,5 @@
 import 'package:day12_login/Communication/chat.dart';
+import 'package:day12_login/Communication/texting.dart';
 import 'package:day12_login/Models/user.dart';
 import 'package:day12_login/Screens/choose.dart';
 import 'package:day12_login/Screens/grade.dart';
@@ -76,7 +77,7 @@ class Home extends StatelessWidget {
               
                 FlatButton(
                   onPressed: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Choose()));
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Texting()));
                   },
                   child: Text("Let's chat!")
                 ),

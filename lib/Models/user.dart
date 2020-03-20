@@ -15,8 +15,9 @@ class UserData {
   bool reading;
 
   String name;
+  String photoUrl;
   int grade;
 
-  UserData({this.math, this.science, this.writing, this.language, this.reading, this.name, this.grade});
+  UserData({this.math, this.science, this.writing, this.language, this.reading, this.name, this.grade, this.photoUrl});
 
 }
