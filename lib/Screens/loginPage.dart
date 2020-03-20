@@ -175,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
 	                  
 	                  onPressed: () async {
 	                    signIn();
-	                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
+	                    
 	                  },
 	                  
 
@@ -216,11 +216,12 @@ class _LoginPageState extends State<LoginPage> {
         AuthService auth = new AuthService();
         dynamic user = await auth.signInWithEmailAndPassword( _email, _password);
         if(user == null) {
-          incorrect = "Incorrect Email or Password!";
           setState(() {
-            
+            incorrect = "Incorrect Email or Password!";
           });
-        } 
+        } else {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
+        }
       }catch(e) {
         print('*************ERROR MESSAGE*************');
         print(e);

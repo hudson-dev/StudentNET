@@ -6,6 +6,7 @@ import 'package:day12_login/services/auth.dart';
 import 'package:day12_login/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'quiz.dart';
 
@@ -227,7 +228,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
     
   }
-  Future<bool> signUp() async{
+  Future<Null> signUp() async{
     
     final formState = _formKey.currentState;
     if(formState.validate()) {
@@ -237,16 +238,25 @@ class _RegisterPageState extends State<RegisterPage> {
       AuthService auth = new AuthService();
       dynamic user = auth.registerWithEmailAndPassword( _email, _password, _name);
       if(user == null) {
-        return false;   
-      } 
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Quiz()));
+        Container(
+              color: Colors.cyan[900],
+              child: Center(
+                child: SpinKitWave(
+                  color: Colors.white,
+                  size: 120
+                ),
+              ),
+            ); 
+      } else {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Quiz()));
+      }
       }catch(e) {
         print('*************ERROR MESSAGE*************');
         print(e);
-        return false;
+        
       }
     }
-    return false;
+    
   } 
 }
       
