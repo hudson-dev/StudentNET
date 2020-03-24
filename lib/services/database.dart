@@ -9,7 +9,7 @@ class Database {
   Future<UserData> value;
 
 // MSWLR
-  Future updateUserData(bool math, bool science, bool writing, bool language, bool reading, String name, int grade) async{
+  Future updateUserData(bool math, bool science, bool writing, bool language, bool reading, String name, int grade,) async{
     uidCollection = Firestore.instance.collection("active").document(uid);
     
     return await uidCollection.setData(
@@ -23,6 +23,7 @@ class Database {
       "grade" : grade,
     });
   }
+
 
   Future updateData(String name, String value) async{
     uidCollection = Firestore.instance.collection("active").document(uid);

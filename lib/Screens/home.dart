@@ -1,3 +1,4 @@
+import 'package:day12_login/Communication/calling.dart';
 import 'package:day12_login/Communication/chat.dart';
 import 'package:day12_login/Communication/texting.dart';
 import 'package:day12_login/Models/user.dart';
@@ -7,6 +8,7 @@ import 'package:day12_login/services/auth.dart';
 import 'package:day12_login/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:day12_login/Communication/call.dart';
 
 void main() => runApp(Home());
 
@@ -75,11 +77,19 @@ class Home extends StatelessWidget {
                     ],
                   ),
               
-                FlatButton(
+                RaisedButton(
+                  elevation: 100,
                   onPressed: () {
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Texting()));
                   },
                   child: Text("Let's chat!")
+                ),
+                RaisedButton(
+                  elevation: 100,
+                  onPressed: () {
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CallPage(channelName: 'hi',)));
+                  },
+                  child: Text("Let's call!")
                 ),
                 Center(
                   child: Text(
