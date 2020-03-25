@@ -66,7 +66,7 @@ class TextingState extends State<Texting> {
 
     firebaseMessaging.getToken().then((token) {
       print('token: $token');
-      Firestore.instance.collection('users').document(currentUserId).updateData({'pushToken': token});
+      Firestore.instance.collection('messages').document(currentUserId).updateData({'pushToken': token});
     }).catchError((err) {
       Fluttertoast.showToast(msg: err.message.toString());
     });
@@ -76,7 +76,7 @@ class TextingState extends State<Texting> {
     var initializationSettingsAndroid = new AndroidInitializationSettings('app_icon');
     var initializationSettingsIOS = new IOSInitializationSettings();
     var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    //flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   void onItemMenuPress(Choice choice) {
@@ -253,7 +253,7 @@ class TextingState extends State<Texting> {
             // List
             Container(
               child: StreamBuilder(
-                stream: Firestore.instance.collection('users').snapshots(),
+                stream: Firestore.instance.collection('messages').snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Center(
@@ -329,7 +329,7 @@ class TextingState extends State<Texting> {
                     children: <Widget>[
                       Container(
                         child: Text(
-                          'Nickname: ${document['nickname']}',
+                          'Nickname: ${document['nickname'] ?? 'Not available'}',
                           style: TextStyle(color: primaryColor),
                         ),
                         alignment: Alignment.centerLeft,

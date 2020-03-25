@@ -21,3 +21,10 @@ class UserData {
   UserData({this.math, this.science, this.writing, this.language, this.reading, this.name, this.grade, this.photoUrl});
 
 }
+
+class PhotoUrl {
+
+  String photoUrl;
+  
+  PhotoUrl({this.photoUrl});
+}

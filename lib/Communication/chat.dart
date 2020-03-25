@@ -97,7 +97,7 @@ class ChatScreenState extends State<ChatScreen> {
       groupChatId = '$peerId-$id';
     }
 
-    Firestore.instance.collection('users').document(id).updateData({'chattingWith': peerId});
+    Firestore.instance.collection('messages').document(id).updateData({'chattingWith': peerId});
 
     setState(() {});
   }

@@ -6,12 +6,26 @@ class Database {
   String uid;
   Database({this.uid});
   DocumentReference uidCollection;
+  DocumentReference messageCollection;
   Future<UserData> value;
 
 // MSWLR
   Future updateUserData(bool math, bool science, bool writing, bool language, bool reading, String name, int grade,) async{
     uidCollection = Firestore.instance.collection("active").document(uid);
+    messageCollection = Firestore.instance.collection("messages").document(uid);
+
     
+
+    await messageCollection.setData(
+    {
+      'nickname': name,
+      'photoUrl': null,
+      "id" : uid,
+      'createdAt': DateTime.now().millisecondsSinceEpoch.toString(),
+      'chattingWith': null
+    });
+
+
     return await uidCollection.setData(
     {
       "math" : math,
@@ -23,6 +37,15 @@ class Database {
       "grade" : grade,
     });
   }
+
+  // Future updateMessages(String photoUrl) async{
+  //   uidCollection = Firestore.instance.collection("messages").document(uid);
+    
+  //   return await uidCollection.setData(
+  //   {
+  //    "photoUrl": photoUrl
+  //   });
+  // }
 
 
   Future updateData(String name, String value) async{
@@ -51,16 +74,11 @@ class Database {
     );
   }
 
-  List<UserData> _preferencesFromSnapshot(QuerySnapshot snapshot){
-    return snapshot.documents.map((doc) {
-      return UserData(
-        language: doc.data['language'] ?? false,
-        math: doc.data['math'] ?? false,
-        reading: doc.data['reading'] ?? false,
-        science: doc.data['science'] ?? false,
-        writing: doc.data['writing'] ?? false,
-      );
-    }).toList();
+  PhotoUrl _userDataFromPhoto (DocumentSnapshot snapshot) {
+    return PhotoUrl(
+     // name: snapshot.data['name'],
+      photoUrl: snapshot.data["photoUrl"],
+    );
   }
 
   Stream<UserData> get userData {
@@ -80,6 +98,13 @@ class Database {
     //return Firestore.instance.collection('active').document(uid).get().then((value) =>  (_userDataFromSnapshot(value)));;
     // need to Somehow put "value" into the stream of data
     
+  }
+
+  Stream<PhotoUrl> get photoUrl {
+    uidCollection = Firestore.instance.collection('active').document(uid);
+
+    return uidCollection.snapshots().map(_userDataFromPhoto);
+  
   }
 }
 

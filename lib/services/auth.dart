@@ -63,7 +63,7 @@ class AuthService {
       FirebaseUser user = result.user;
       User val = _getUser(user);
       database = Database(uid: val.uid);
-      print(val);
+      print(user);
       return val;
     } catch (e) {
       print((e.toString()));

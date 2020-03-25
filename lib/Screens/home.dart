@@ -22,7 +22,7 @@ class Home extends StatelessWidget {
     User user = Provider.of<User>(context);
     bool math, science, writing, language, reading;
     UserData userData;
-    String name;
+    String name, photoUrl;
 
     
     return StreamBuilder<UserData>(
@@ -40,6 +40,7 @@ class Home extends StatelessWidget {
             language = userData.language;
             reading = userData.reading; 
             name = userData.name;
+            photoUrl = userData.photoUrl;
  
             
            return MaterialApp(
@@ -80,7 +81,7 @@ class Home extends StatelessWidget {
                 RaisedButton(
                   elevation: 100,
                   onPressed: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Texting()));
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Texting(currentUserId: user.uid,)));
                   },
                   child: Text("Let's chat!")
                 ),
