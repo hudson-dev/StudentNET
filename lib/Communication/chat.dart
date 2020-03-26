@@ -3,12 +3,15 @@ import 'dart:io';
 import 'package:day12_login/Communication/const.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:day12_login/Models/user.dart';
+import 'package:day12_login/services/database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:day12_login/Communication/fullPhoto.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Chat extends StatelessWidget {
@@ -30,6 +33,7 @@ class Chat extends StatelessWidget {
       body: new ChatScreen(
         peerId: peerId,
         peerAvatar: peerAvatar,
+        context: context,
       ),
     );
   }
@@ -38,28 +42,32 @@ class Chat extends StatelessWidget {
 class ChatScreen extends StatefulWidget {
   final String peerId;
   final String peerAvatar;
+  BuildContext context;
 
-  ChatScreen({Key key, @required this.peerId, @required this.peerAvatar}) : super(key: key);
+  ChatScreen({Key key, @required this.peerId, @required this.peerAvatar,  @required this.context}) : super(key: key);
 
   @override
-  State createState() => new ChatScreenState(peerId: peerId, peerAvatar: peerAvatar);
+  State createState() => new ChatScreenState(peerId: peerId, peerAvatar: peerAvatar, context: context);
 }
 
 class ChatScreenState extends State<ChatScreen> {
-  ChatScreenState({Key key, @required this.peerId, @required this.peerAvatar});
-
+  ChatScreenState({Key key, @required this.peerId, @required this.peerAvatar, @required this.context});
+  
+  BuildContext context;
   String peerId;
   String peerAvatar;
   String id;
 
   var listMessage;
   String groupChatId;
-  SharedPreferences prefs;
+  var prefs;
 
   File imageFile;
   bool isLoading;
   bool isShowSticker;
   String imageUrl;
+  String ident;
+
 
   final TextEditingController textEditingController = new TextEditingController();
   final ScrollController listScrollController = new ScrollController();
@@ -80,6 +88,8 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   void onFocusChange() {
+
+    
     if (focusNode.hasFocus) {
       // Hide sticker when keyboard appear
       setState(() {
@@ -89,18 +99,23 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   readLocal() async {
-    prefs = await SharedPreferences.getInstance();
-    id = prefs.getString('id') ?? '';
-    if (id.hashCode <= peerId.hashCode) {
-      groupChatId = '$id-$peerId';
+
+    User user = Provider.of<User>(context);
+    
+    ident = user.uid;
+
+    if (ident.hashCode <= peerId.hashCode) {
+      groupChatId = '$ident-$peerId';
     } else {
-      groupChatId = '$peerId-$id';
+      groupChatId = '$peerId-$ident';
     }
 
-    Firestore.instance.collection('messages').document(id).updateData({'chattingWith': peerId});
+    Firestore.instance.collection('messages').document(ident).updateData({'chattingWith': peerId});
 
     setState(() {});
-  }
+              
+        }
+  
 
   Future getImage() async {
     imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -158,6 +173,7 @@ class ChatScreenState extends State<ChatScreen> {
             'idFrom': id,
             'idTo': peerId,
             'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
+            'timestamp': 'date',
             'content': content,
             'type': type
           },
@@ -382,13 +398,14 @@ class ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Future<bool> onBackPress() {
+  Future<bool> onBackPress() async{
+    
     if (isShowSticker) {
       setState(() {
         isShowSticker = false;
       });
     } else {
-      Firestore.instance.collection('users').document(id).updateData({'chattingWith': null});
+      Firestore.instance.collection('messages').document(ident).updateData({'chattingWith': null});
       Navigator.pop(context);
     }
 

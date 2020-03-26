@@ -1,22 +1,23 @@
 import 'package:day12_login/Animation/FadeAnimation.dart';
 import 'package:day12_login/Screens/choose.dart';
 import 'package:day12_login/Screens/home.dart';
-import 'package:day12_login/Screens/password_reset.dart';
+import 'package:day12_login/Screens/loginPage.dart';
 import 'package:day12_login/Screens/quiz.dart';
 import 'package:day12_login/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class LoginPage extends StatefulWidget {
+class ResetPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _ResetPageState createState() => _ResetPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _ResetPageState extends State<ResetPage> {
 
   String _email, _password;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String incorrect = " ";
+  String check = " ";
+  String unCheck = " ";
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
 	                      child: FadeAnimation(1.6, Container(
 	                        margin: EdgeInsets.only(top: 50),
 	                        child: Center(
-	                          child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),),
+	                          child: Text("Reset Password", style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),),
 	                        ),
 	                      )),
 	                    ),
@@ -91,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
 	                        icon: Icon(Icons.arrow_back),
 	                        color: Colors.black,
 	                        onPressed: () {
-	                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Choose()));
+	                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
 	                      }
 	                  ),
 	                    ),
@@ -141,32 +142,13 @@ class _LoginPageState extends State<LoginPage> {
 	                            ),
 	                          ),
 	                        ),
-	                        Container(
-	                          padding: EdgeInsets.all(8.0),
-	                          child: TextFormField(
-	                            validator: (input) {
-	                              if(input.isEmpty) {
-	                                return 'Please provide a password';
-	                              }
-	                            },
-	                            onSaved: (input) {
-	                              _password = input;
-	                            }, 
-	                            obscureText: true,
-	                            decoration: InputDecoration(
-	                              border: InputBorder.none,
-	                              hintText: "Password",
-	                              hintStyle: TextStyle(color: Colors.grey[400]),
-	                              
-	                            ),
-	                          ),
-	                        )
 	                      ],
 	                    ),
 	                  )
 	                    )),
 	                SizedBox(height: 20),
-	                FadeAnimation(1.5, Text(incorrect, style: TextStyle(color: Colors.red),)),
+	                FadeAnimation(1.5, Text(check, style: TextStyle(color: Colors.green[400]),)),
+                  FadeAnimation(1.5, Text(unCheck, style: TextStyle(color: Colors.red[400]),)),
 	                    SizedBox(height: 20,),
 	                    FadeAnimation(2, 
 	                    SizedBox(
@@ -175,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
 	                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
 	                  
 	                  onPressed: () async {
-	                    signIn();
+	                    reset();
 	                    
 	                  },
 	                  
@@ -189,19 +171,12 @@ class _LoginPageState extends State<LoginPage> {
 	                    borderRadius: BorderRadius.all(Radius.circular(80.0)),
 	                  ),
 	                      child: Center(
-	                        child: Text("Login", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+	                        child: Text("Reset Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
 	                    )
 	                  ),
 	                        ),
 	                    ),
 	                    ),
-	                SizedBox(height: 10,),
-	                    FadeAnimation(1.5, 
-                        FlatButton(
-                          child: Text("Forgot Password?", style: TextStyle(color: Color.fromRGBO(143, 148, 251, 1)),),
-                          onPressed:  () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ResetPage()));}
-                        )
-                      ),
 	                  ],
 	                ),
 	              )
@@ -213,30 +188,33 @@ class _LoginPageState extends State<LoginPage> {
     );
     
   }
-  Future<bool> signIn() async{
+  Future<bool> reset() async{
     
     final formState = _formKey.currentState;
     if(formState.validate()) {
       formState.save();
       try {
         AuthService auth = new AuthService();
-        dynamic user = await auth.signInWithEmailAndPassword( _email, _password);
-        if(user == null) {
+        bool change = await auth.resetPassword( _email,);
+        if(change == true) {
           setState(() {
-            incorrect = "Incorrect Email or Password!";
+            unCheck = "";
+            check = "Successfully reset password!";
           });
         } else {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
+          setState(() {
+            check = "";
+            unCheck = "Unable to reset password!";
+          });
         }
-      }catch(e) {
-        print('*************ERROR MESSAGE*************');
-        print(e);
-        return false;
+        
+        } catch(e) {
+          print(e);
+        } 
       }
+      
     }
-    return false;
-  } 
-
+    
   
 }
 

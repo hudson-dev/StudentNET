@@ -4,6 +4,9 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:day12_login/Screens/choose.dart';
+import 'package:day12_login/Screens/home.dart';
+import 'package:day12_login/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +41,6 @@ class TextingState extends State<Texting> {
 
   bool isLoading = false;
   List<Choice> choices = const <Choice>[
-    const Choice(title: 'Settings', icon: Icons.settings),
     const Choice(title: 'Log out', icon: Icons.exit_to_app),
   ];
 
@@ -83,7 +85,7 @@ class TextingState extends State<Texting> {
     if (choice.title == 'Log out') {
       handleSignOut();
     } else {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Settings()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
     }
   }
 
@@ -199,16 +201,14 @@ class TextingState extends State<Texting> {
       isLoading = true;
     });
 
-    await FirebaseAuth.instance.signOut();
-    await googleSignIn.disconnect();
-    await googleSignIn.signOut();
+    AuthService auth = new AuthService();
+    auth.signOut();
 
     this.setState(() {
       isLoading = false;
     });
 
-    Navigator.of(context)
-        .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => MyApp()), (Route<dynamic> route) => false);
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Choose()));
   }
 
   @override
@@ -351,6 +351,8 @@ class TextingState extends State<Texting> {
             ],
           ),
           onPressed: () {
+            // *IMPORTANT HERE LOOK HERE
+            // * IIMPORTANTLKAJTLKAJSFDLKJFLKJSDLKFJDSLKFJSLKFJSLKFJDSLKFJKLSFNKJF JKSDFKJLODSM <M <M NJHBNMJH BNM JHBNMJ HBNMH JBNHMJMNHJ GNMHJGMNJHG 
             Navigator.push(
                 context,
                 MaterialPageRoute(

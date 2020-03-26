@@ -134,7 +134,7 @@ class SettingsScreenState extends State<SettingsScreen> {
     });
 
     Firestore.instance
-        .collection('users')
+        .collection('messages')
         .document(id)
         .updateData({'nickname': nickname, 'aboutMe': aboutMe, 'photoUrl': photoUrl}).then((data) async {
       await prefs.setString('nickname', nickname);

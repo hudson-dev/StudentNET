@@ -22,7 +22,8 @@ class MyApp extends StatelessWidget {
       providers: [
         //ValueListenableProvider(builder: (_) => ValueNotifier(true)),
         StreamProvider<User>(create: (_) => AuthService().user),
-        StreamProvider<UserData>(create: (_) => Database().userData),
+        StreamProvider<Message>(create: (_) => Database().messageData),
+
       ],
         child: MaterialApp(
         home: Choose(),

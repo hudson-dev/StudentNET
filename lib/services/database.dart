@@ -48,13 +48,7 @@ class Database {
   // }
 
 
-  Future updateData(String name, String value) async{
-    uidCollection = Firestore.instance.collection("active").document(uid);
-    return await uidCollection.setData(
-    {
-      name : value.toString(),
-    });
-  }
+ 
   //convert the firebase user obj into User obj
   User _getUser(FirebaseUser user){
     return user != null ? User(uid:user.uid) : null;
@@ -74,10 +68,10 @@ class Database {
     );
   }
 
-  PhotoUrl _userDataFromPhoto (DocumentSnapshot snapshot) {
-    return PhotoUrl(
+  Message _userDataFromMessage (DocumentSnapshot snapshot) {
+    return Message(
      // name: snapshot.data['name'],
-      photoUrl: snapshot.data["photoUrl"],
+      id: snapshot.data["id"],
     );
   }
 
@@ -100,10 +94,10 @@ class Database {
     
   }
 
-  Stream<PhotoUrl> get photoUrl {
-    uidCollection = Firestore.instance.collection('active').document(uid);
+  Stream<Message> get messageData {
+    messageCollection = Firestore.instance.collection('messages').document(uid);
 
-    return uidCollection.snapshots().map(_userDataFromPhoto);
+    return messageCollection.snapshots().map(_userDataFromMessage);
   
   }
 }

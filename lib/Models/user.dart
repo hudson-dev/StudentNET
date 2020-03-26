@@ -22,9 +22,10 @@ class UserData {
 
 }
 
-class PhotoUrl {
+class Message {
 
-  String photoUrl;
+  String id;
   
-  PhotoUrl({this.photoUrl});
+  
+  Message({this.id});
 }
