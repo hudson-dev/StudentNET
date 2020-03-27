@@ -6,6 +6,7 @@ import 'package:day12_login/Screens/choose.dart';
 import 'package:day12_login/Screens/grade.dart';
 import 'package:day12_login/services/auth.dart';
 import 'package:day12_login/services/database.dart';
+import 'package:day12_login/services/routing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:day12_login/Communication/call.dart';
@@ -82,6 +83,14 @@ class Home extends StatelessWidget {
                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CallPage(channelName: user.uid,)));
                  },
                  child: Text("Let's call!")
+               ),
+               RaisedButton(
+                 color: Colors.white,
+                 elevation: 100,
+                 onPressed: () {
+                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Routing()));
+                 },
+                 child: Text("Let's connect!")
                ),
                Center(
                  child: Text(

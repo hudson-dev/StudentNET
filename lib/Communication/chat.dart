@@ -29,6 +29,20 @@ class Chat extends StatelessWidget {
           style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () {
+                
+              },
+              child: Icon(
+                Icons.video_call,
+                size: 26.0
+              )
+            )
+          )
+        ],
       ),
       body: new ChatScreen(
         peerId: peerId,
@@ -56,7 +70,7 @@ class ChatScreenState extends State<ChatScreen> {
   BuildContext context;
   String peerId;
   String peerAvatar;
-  String id;
+
 
   var listMessage;
   String groupChatId;
@@ -66,7 +80,7 @@ class ChatScreenState extends State<ChatScreen> {
   bool isLoading;
   bool isShowSticker;
   String imageUrl;
-  String ident;
+  String id;
 
 
   final TextEditingController textEditingController = new TextEditingController();
@@ -102,15 +116,15 @@ class ChatScreenState extends State<ChatScreen> {
 
     User user = Provider.of<User>(context);
     
-    ident = user.uid;
+    id = user.uid;
 
-    if (ident.hashCode <= peerId.hashCode) {
-      groupChatId = '$ident-$peerId';
+    if (id.hashCode <= peerId.hashCode) {
+      groupChatId = '$id-$peerId';
     } else {
-      groupChatId = '$peerId-$ident';
+      groupChatId = '$peerId-$id';
     }
 
-    Firestore.instance.collection('messages').document(ident).updateData({'chattingWith': peerId});
+    Firestore.instance.collection('messages').document(id).updateData({'chattingWith': peerId});
 
     setState(() {});
               
@@ -173,7 +187,6 @@ class ChatScreenState extends State<ChatScreen> {
             'idFrom': id,
             'idTo': peerId,
             'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
-            'timestamp': 'date',
             'content': content,
             'type': type
           },
@@ -405,7 +418,7 @@ class ChatScreenState extends State<ChatScreen> {
         isShowSticker = false;
       });
     } else {
-      Firestore.instance.collection('messages').document(ident).updateData({'chattingWith': null});
+      Firestore.instance.collection('messages').document(id).updateData({'chattingWith': null});
       Navigator.pop(context);
     }
 
