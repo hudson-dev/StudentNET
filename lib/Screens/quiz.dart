@@ -54,17 +54,6 @@ class _QuizState extends State<Quiz> {
     User user = Provider.of<User>(context);
     List<String> topics = ["Math", "Science", "Writing", "Language", "Reading"];
     
-    if (user.uid == null) {
-      return Container(
-        color: Colors.cyan[900],
-        child: Center(
-          child: SpinKitWave(
-            color: Colors.white,
-            size: 120
-          ),
-        ),
-      );
-    }
  
     return StreamBuilder<UserData>(
       stream: Database(uid: user.uid).userData,

@@ -22,7 +22,8 @@ class Database {
       'photoUrl': null,
       "id" : uid,
       'createdAt': DateTime.now().millisecondsSinceEpoch.toString(),
-      'chattingWith': null
+      'chattingWith': null,
+      'beingCalled': false,
     });
 
 
@@ -70,8 +71,13 @@ class Database {
 
   Message _userDataFromMessage (DocumentSnapshot snapshot) {
     return Message(
-     // name: snapshot.data['name'],
       id: snapshot.data["id"],
+    );
+  }
+
+  WantedId _beingCalled (DocumentSnapshot snapshot) {
+    return WantedId(
+      wantedId: snapshot.data["beingCalled"],
     );
   }
 
@@ -98,6 +104,13 @@ class Database {
     messageCollection = Firestore.instance.collection('messages').document(uid);
 
     return messageCollection.snapshots().map(_userDataFromMessage);
+  
+  }
+
+  Future<WantedId> call(String wantedID) {
+    messageCollection = Firestore.instance.collection('messages').document(wantedID);
+
+    return messageCollection.do
   
   }
 }

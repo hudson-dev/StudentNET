@@ -92,6 +92,14 @@ class Home extends StatelessWidget {
                  },
                  child: Text("Let's connect!")
                ),
+               RaisedButton(
+                 color: Colors.white,
+                 elevation: 100,
+                 onPressed: () {
+                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Texting(currentUserId: user.uid,)));
+                 },
+                 child: Text("Past Chats")
+               ),
                Center(
                  child: Text(
                    "UID: ${user.uid}",

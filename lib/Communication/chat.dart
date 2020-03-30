@@ -31,13 +31,16 @@ class Chat extends StatelessWidget {
         ),
         centerTitle: true,
         actions: <Widget>[
-          Stack(
+          Row(
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.only(right: 20.0),
                 child: GestureDetector(
-                  onTap: () {
-                    
+                  onTap: ()  {
+                    User user = Provider.of<User>(context);
+                    Firestore.instance.collection('messages').document(peerId).updateData({'beingCalled': true});
+                    var beingCalled = Database(uid: user.uid).call(peerId);
+                    print(beingCalled);
                   },
                   child: Icon(
                     Icons.video_call,
@@ -45,19 +48,22 @@ class Chat extends StatelessWidget {
                   )
                 )
               ),
-              Padding(
-                padding: EdgeInsets.only(left: 20.0),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
-                  },
-                  child: Icon(
-                    Icons.arrow_back,
-                    size: 26.0,
-                    color: Colors.black
-                  )
+
+                
+                Padding(
+                  padding: const EdgeInsets.only(right: 0.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
+                    },
+                    child: Icon(
+                      Icons.arrow_back,
+                      size: 26.0,
+                      color: Colors.black
+                    )
+                  ),
                 )
-              ),
+              
             ],
           ),
         ],

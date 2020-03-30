@@ -29,3 +29,11 @@ class Message {
   
   Message({this.id});
 }
+
+class WantedId {
+
+   String wantedId;
+  
+  
+  WantedId({this.wantedId});
+}
