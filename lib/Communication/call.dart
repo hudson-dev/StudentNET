@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:day12_login/Communication/app_id.dart';
 import 'package:day12_login/Screens/home.dart';
@@ -12,13 +13,16 @@ class CallPage extends StatefulWidget {
   const CallPage({Key key, this.channelName}) : super(key: key);
 
   @override
-  _CallPageState createState() => _CallPageState();
+  _CallPageState createState() => _CallPageState(channelName);
 }
 
 class _CallPageState extends State<CallPage> {
   static final _users = <int>[];
   final _infoStrings = <String>[];
   bool muted = false;
+  String channelName;
+
+  _CallPageState(this.channelName);
 
   @override
   void dispose() {
@@ -280,6 +284,8 @@ class _CallPageState extends State<CallPage> {
   }
 
   void _onCallEnd(BuildContext context) {
+    Firestore.instance.collection('messages').document(channelName).updateData({'beingCalled': false});
+    print(channelName);
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
   }
 

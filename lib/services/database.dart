@@ -107,10 +107,10 @@ class Database {
   
   }
 
-  Future<WantedId> call(String wantedID) {
+  Stream<WantedId> call(String wantedID) {
     messageCollection = Firestore.instance.collection('messages').document(wantedID);
 
-    return messageCollection.do
+    return messageCollection.snapshots().map(_beingCalled);
   
   }
 }

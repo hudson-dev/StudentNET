@@ -15,14 +15,17 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'call.dart';
+
 class Chat extends StatelessWidget {
   final String peerId;
   final String peerAvatar;
-
+  
   Chat({Key key, @required this.peerId, @required this.peerAvatar}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    User user = Provider.of<User>(context);
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(
@@ -37,10 +40,10 @@ class Chat extends StatelessWidget {
                 padding: EdgeInsets.only(right: 20.0),
                 child: GestureDetector(
                   onTap: ()  {
-                    User user = Provider.of<User>(context);
                     Firestore.instance.collection('messages').document(peerId).updateData({'beingCalled': true});
                     var beingCalled = Database(uid: user.uid).call(peerId);
                     print(beingCalled);
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CallPage(channelName: peerId,)));
                   },
                   child: Icon(
                     Icons.video_call,
@@ -99,6 +102,7 @@ class ChatScreenState extends State<ChatScreen> {
   var listMessage;
   String groupChatId;
   var prefs;
+  var user;
 
   File imageFile;
   bool isLoading;
@@ -451,6 +455,7 @@ class ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    user = Provider.of<User>(context);
     return WillPopScope(
       child: Stack(
         children: <Widget>[
@@ -596,6 +601,32 @@ class ChatScreenState extends State<ChatScreen> {
             )
           : Container(),
     );
+  }
+
+   void _showModalSheet() {
+    showModalBottomSheet(
+        context: context,
+        builder: (builder) {
+          return new Container(
+            color: Colors.greenAccent,
+            child: new Center(
+              child: new Text("You are being called by "),
+            ),
+          );
+        });
+  }
+
+  Widget buildBeingCalled() {
+    var beingCalled = Database(uid: user.uid).call(peerId);
+    print(beingCalled);
+    if(beingCalled == true) 
+    {
+      _showModalSheet(); 
+    } else {
+      return Container(
+
+      );
+    }
   }
 
   Widget buildInput() {
