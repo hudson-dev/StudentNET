@@ -4,6 +4,7 @@ import 'package:day12_login/Communication/const.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:day12_login/Models/user.dart';
+import 'package:day12_login/Screens/home.dart';
 import 'package:day12_login/services/database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -30,18 +31,35 @@ class Chat extends StatelessWidget {
         ),
         centerTitle: true,
         actions: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              onTap: () {
-                
-              },
-              child: Icon(
-                Icons.video_call,
-                size: 26.0
-              )
-            )
-          )
+          Stack(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () {
+                    
+                  },
+                  child: Icon(
+                    Icons.video_call,
+                    size: 26.0
+                  )
+                )
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 20.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
+                  },
+                  child: Icon(
+                    Icons.arrow_back,
+                    size: 26.0,
+                    color: Colors.black
+                  )
+                )
+              ),
+            ],
+          ),
         ],
       ),
       body: new ChatScreen(

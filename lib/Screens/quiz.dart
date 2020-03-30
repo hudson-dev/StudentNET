@@ -47,18 +47,24 @@ class _QuizState extends State<Quiz> {
       
   //   });
   // }
- 
- 
-  // DocumentReference uidCollection;
-  // Database database = new Database(uid: 'NCPMKhL7AmNCJwYxzvs7sThy9d72');
- 
+
   @override
   Widget build(BuildContext context) {
 
     User user = Provider.of<User>(context);
     List<String> topics = ["Math", "Science", "Writing", "Language", "Reading"];
     
-    
+    if (user.uid == null) {
+      return Container(
+        color: Colors.cyan[900],
+        child: Center(
+          child: SpinKitWave(
+            color: Colors.white,
+            size: 120
+          ),
+        ),
+      );
+    }
  
     return StreamBuilder<UserData>(
       stream: Database(uid: user.uid).userData,
@@ -111,7 +117,7 @@ class _QuizState extends State<Quiz> {
                               math = !math;
                               Database(uid: user.uid).updateUserData(math, science, writing, language, reading, name, 0); 
                               setState(() => pressAttention0 = !pressAttention0);
-                              
+                              print(pressAttention0);
                             }
                           ),
                         ),
@@ -125,7 +131,7 @@ class _QuizState extends State<Quiz> {
                               science = !science;
                               Database(uid: user.uid).updateUserData(math, science, writing, language, reading, name, 0); 
                               setState(() => pressAttention1 = !pressAttention1);
-                              
+                              print(pressAttention1);
                             }
                           ),
                         ),
@@ -139,7 +145,7 @@ class _QuizState extends State<Quiz> {
                               writing = !writing;
                               Database(uid: user.uid).updateUserData(math, science, writing, language, reading, name, 0); 
                               setState(() => pressAttention2 = !pressAttention2);
-                              
+                              print(pressAttention2);
                             }
                           ),
                         ),
@@ -153,7 +159,7 @@ class _QuizState extends State<Quiz> {
                               language = !language;
                               Database(uid: user.uid).updateUserData(math, science, writing, language, reading, name, 0); 
                               setState(() => pressAttention3 = !pressAttention3);
-                              
+                              print(pressAttention3);
                             }
                           ),
                         ),
@@ -167,7 +173,7 @@ class _QuizState extends State<Quiz> {
                               reading = !reading;
                               Database(uid: user.uid).updateUserData(math, science, writing, language, reading, name, 0); 
                               setState(() => pressAttention4 = !pressAttention4);
-                              
+                              print(pressAttention4);
                             }
                           ),
                         ),
@@ -212,109 +218,4 @@ class _QuizState extends State<Quiz> {
           }
         });
       }
-
-  GridTile buildGridTile(String topic, User user,) {
-
-    // if(topic == "Math") {
-    //   if(math) {
-    //     buttonColor = true;
-    //   }
-    // }
-
-    return GridTile(
-      child: Card(
-        margin: EdgeInsets.all(5),
-        child: RaisedButton(
-          color: buttonColor ? Colors.blue : Colors.grey,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 70, 0, 0),
-            child: Column(
-              children: <Widget>[
-
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    topic,
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      color: Colors.black
-                    ),
-                  ),
-                ),
-
-              
-              ],
-              
-            ),
-          ), onPressed: () {
-            
-          
-            if(topic == "Math") {
-              math = !math;
-              Database(uid: user.uid).updateUserData(math, science, writing, language, reading, name, 0);
-            }
-            if(topic == "Science") {
-              science = !science;
-              Database(uid: user.uid).updateUserData(math, science, writing, language, reading, name, 0);
-            }
-            if(topic == "Writing") {
-              writing = !writing;
-              Database(uid: user.uid).updateUserData(math, science, writing, language, reading, name, 0);
-            }
-            if(topic == "Language") {
-              language = !language;
-              Database(uid: user.uid).updateUserData(math, science, writing, language, reading, name, 0);
-            }
-            if(topic == "Reading") {
-              reading = !reading;
-              Database(uid: user.uid).updateUserData(math, science, writing, language, reading, name, 0);
-            }
-            
-          },
-        )
-      )
-    );
-
-  }
- 
- 
 }
- 
-
-
-class TopicCard extends ChangeNotifier  {
-  
-} 
- 
- 
-Widget template(topic) {
-  return Card(
-    margin: EdgeInsets.fromLTRB(16, 20, 200, 0),
-    child: Padding(
-      padding: const EdgeInsets.all(40.0),
-      child: Column(
-        children: <Widget>[
- 
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              '$topic',
-              style: TextStyle(
-                fontSize: 20.0,
-                color: Colors.black
-              ),
-            ),
-          ),
- 
- 
-        ],
-      ),
-    )
-  );
-}
- 
- 
- 
- 
- 
-
