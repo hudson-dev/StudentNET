@@ -71,7 +71,12 @@ class Database {
 
   Message _userDataFromMessage (DocumentSnapshot snapshot) {
     return Message(
+      beingCalled: snapshot.data["beingCalled"],
+      chattingWith: snapshot.data["chattingWith"],
+      createdAt: snapshot.data["createdAt"],
       id: snapshot.data["id"],
+      nickname: snapshot.data["nickname"],
+      photoUrl: snapshot.data["photoUrl"],
     );
   }
 

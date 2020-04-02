@@ -24,10 +24,16 @@ class UserData {
 
 class Message {
 
+  bool beingCalled;
+  String chattingWith;
+  String createdAt;
   String id;
+  String nickname;
+  String photoUrl;
+
   
   
-  Message({this.id});
+  Message({this.beingCalled, this.chattingWith, this.createdAt, this.id, this.nickname,this.photoUrl});
 }
 
 class WantedId {

@@ -18,6 +18,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
 
   String _email, _password, _name;
+  String incorrect = " ";
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -189,6 +190,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       )
 	                  )),
 	                  SizedBox(height: 40,),
+                    FadeAnimation(1.5, Text(incorrect, style: TextStyle(color: Colors.red),)),
 	                  FadeAnimation(2, 
 	                  SizedBox(
                       height: 50,
@@ -238,15 +240,10 @@ class _RegisterPageState extends State<RegisterPage> {
       AuthService auth = new AuthService();
       dynamic user = auth.registerWithEmailAndPassword( _email, _password, _name);
       if(user == null) {
-        Container(
-              color: Colors.cyan[900],
-              child: Center(
-                child: SpinKitWave(
-                  color: Colors.white,
-                  size: 120
-                ),
-              ),
-            ); 
+        setState(() {
+          incorrect = 'Unable to create account';
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegisterPage()));
+        });
       } else {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Quiz()));
       }

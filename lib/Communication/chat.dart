@@ -25,58 +25,92 @@ class Chat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    User user = Provider.of<User>(context);
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(
-          'CHAT',
-          style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        actions: <Widget>[
-          Row(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(right: 20.0),
-                child: GestureDetector(
-                  onTap: ()  {
-                    Firestore.instance.collection('messages').document(peerId).updateData({'beingCalled': true});
-                    var beingCalled = Database(uid: user.uid).call(peerId);
-                    print(beingCalled);
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CallPage(channelName: peerId,)));
-                  },
-                  child: Icon(
-                    Icons.video_call,
-                    size: 26.0
-                  )
-                )
-              ),
 
-                
-                Padding(
-                  padding: const EdgeInsets.only(right: 0.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
-                    },
-                    child: Icon(
-                      Icons.arrow_back,
-                      size: 26.0,
-                      color: Colors.black
-                    )
-                  ),
-                )
+    Message messageData;
+    bool beingCalled;
+    String chattingWith, createdAt, id, nickname, photoUrl;
+    var peerName;
+
+    User user = Provider.of<User>(context);
+
+    return StreamBuilder<Message>(
+        stream: Database(uid: user.uid).messageData,
+          builder: (context, snapshot) {
+          // var userSnapshot = Provider.of<UserData>(context);
+            if (snapshot.hasData) {
+              messageData = snapshot.data;
+              beingCalled = messageData.beingCalled;
+              chattingWith = messageData.chattingWith;
+              createdAt = messageData.createdAt;
+              id = messageData.id;
+              nickname = messageData.nickname;
+              photoUrl = messageData.photoUrl;
+
+              peerName = Firestore.instance
+                .collection('messages')
+                .where('id', isEqualTo: chattingWith)
+                .getDocuments();
               
-            ],
-          ),
-        ],
-      ),
-      body: new ChatScreen(
-        peerId: peerId,
-        peerAvatar: peerAvatar,
-        context: context,
-      ),
-    );
+              return SafeArea(
+                child: new Scaffold(
+                  appBar: new AppBar(
+                    title: Text(
+                      peerName.then((doc) {
+                        if(doc.exits) {
+                          doc.get('nickname').toString();
+                        }
+                      }),
+                      style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+                    ),
+                    centerTitle: true,
+                    actions: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(right: 20.0),
+                            child: GestureDetector(
+                              onTap: ()  {
+                                Firestore.instance.collection('messages').document(peerId).updateData({'beingCalled': true});
+                                var beingCalled = Database(uid: user.uid).call(peerId);
+                                print(beingCalled);
+                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CallPage(channelName: peerId,)));
+                              },
+                              child: Icon(
+                                Icons.video_call,
+                                size: 26.0
+                              )
+                            )
+                          ),
+
+                            
+                            Padding(
+                              padding: const EdgeInsets.only(right: 0.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
+                                },
+                                child: Icon(
+                                  Icons.arrow_back,
+                                  size: 26.0,
+                                  color: Colors.black
+                                )
+                              ),
+                            )
+                          
+                        ],
+                      ),
+                    ],
+                  ),
+                  body: new ChatScreen(
+                    peerId: peerId,
+                    peerAvatar: peerAvatar,
+                    context: context,
+                  ),
+                ),
+              );
+        
+      }
+    });
   }
 }
 
@@ -156,7 +190,9 @@ class ChatScreenState extends State<ChatScreen> {
 
     setState(() {});
               
-        }
+  }
+
+ 
   
 
   Future getImage() async {

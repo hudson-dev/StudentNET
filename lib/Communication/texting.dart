@@ -211,6 +211,13 @@ class TextingState extends State<Texting> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => Choose()));
   }
 
+  getPeerName (String id) {
+    return Firestore.instance
+          .collection('messages')
+          .where('id', isEqualTo: id)
+          .getDocuments();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
