@@ -20,12 +20,14 @@ import 'call.dart';
 class Chat extends StatelessWidget {
   final String peerId;
   final String peerAvatar;
+  DocumentSnapshot ss;
   
   Chat({Key key, @required this.peerId, @required this.peerAvatar}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
+    var ref; 
     Message messageData;
     bool beingCalled;
     String chattingWith, createdAt, id, nickname, photoUrl;
@@ -46,66 +48,82 @@ class Chat extends StatelessWidget {
               nickname = messageData.nickname;
               photoUrl = messageData.photoUrl;
 
-              peerName = Firestore.instance
-                .collection('messages')
-                .where('id', isEqualTo: chattingWith)
-                .getDocuments();
-              
-              return new Scaffold(
-                appBar: new AppBar(
-                  title: Text(
-                    peerName.then((doc) {
-                      if(doc.exists) {
-                        doc.get('nickname').toString();
-                      }
-                    }),
-                    style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
-                  ),
-                  centerTitle: true,
-                  actions: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(right: 20.0),
-                          child: GestureDetector(
-                            onTap: ()  {
-                              Firestore.instance.collection('messages').document(peerId).updateData({'beingCalled': true});
-                              var beingCalled = Database(uid: user.uid).call(peerId);
-                              print(beingCalled);
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CallPage(channelName: peerId,)));
-                            },
-                            child: Icon(
-                              Icons.video_call,
-                              size: 26.0
-                            )
-                          )
-                        ),
+              return StreamBuilder(
+                stream: Firestore.instance.collection('messages').snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    print(snapshot.data);
+                    ref = snapshot.data.documents[peerId];
+                    peerName = ref['nickname'];
 
-                          
-                          Padding(
-                            padding: const EdgeInsets.only(right: 0.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
-                              },
-                              child: Icon(
-                                Icons.arrow_back,
-                                size: 26.0,
-                                color: Colors.black
-                              )
-                            ),
-                          )
-                        
-                      ],
-                    ),
-                  ],
-                ),
-                body: new ChatScreen(
-                  peerId: peerId,
-                  peerAvatar: peerAvatar,
-                  context: context,
-                ),
+                    return new Scaffold(
+                      appBar: new AppBar(
+                        title: Text(
+                          peerName.toString(),
+                          style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+                        ),
+                        centerTitle: true,
+                        actions: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.only(right: 20.0),
+                                child: GestureDetector(
+                                  onTap: ()  {
+                                    Firestore.instance.collection('messages').document(peerId).updateData({'beingCalled': true});
+                                    var beingCalled = Database(uid: user.uid).call(peerId);
+                                    print(beingCalled);
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CallPage(channelName: peerId,)));
+                                  },
+                                  child: Icon(
+                                    Icons.video_call,
+                                    size: 26.0
+                                  )
+                                )
+                              ),
+
+                                
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 0.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
+                                    },
+                                    child: Icon(
+                                      Icons.arrow_back,
+                                      size: 26.0,
+                                      color: Colors.black
+                                    )
+                                  ),
+                                )
+                              
+                            ],
+                          ),
+                        ],
+                      ),
+                      body: new ChatScreen(
+                        peerId: peerId,
+                        peerAvatar: peerAvatar,
+                        context: context,
+                      ),
+                    );
+                  } else {
+                    return 
+                      Container(
+                        color: Colors.blue,
+                        child: Text(
+                          peerName
+                        ),
+                    );
+                  }
+                },
               );
+
+              
+
+              
+
+              
         
       }
     });
