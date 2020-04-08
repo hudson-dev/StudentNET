@@ -49,8 +49,8 @@ class Chat extends StatelessWidget {
             nickname = messageData.nickname;
             photoUrl = messageData.photoUrl;
 
-          return new Scaffold(
-            appBar: new AppBar(
+          return Scaffold(
+            appBar: AppBar(
               title: Text(
                 "Chat",
                 style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
@@ -100,6 +100,8 @@ class Chat extends StatelessWidget {
               context: context,
             ),
           );
+        } else {
+          return Container();
         }
       }
     );
@@ -232,7 +234,7 @@ class ChatScreenState extends State<ChatScreen> {
     // type: 0 = text, 1 = image, 2 = sticker
     if (content.trim() != '') {
       textEditingController.clear();
-      copyCollection(peerId);
+      copyDocument(peerId);
 
       var documentReference = Firestore.instance
           .collection('messages')
@@ -757,18 +759,18 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
 
-  copyCollection(String copyId) async {
+  copyDocument(String copyId) async {
 
     bool beingCalled;
     var createdAt;
     String chattingWith, id2, nickname, photoUrl;
     var stream = Firestore.instance.collection('messages').document(copyId).snapshots();
 
-    if (listMessage != null) {
+    
 
     DocumentReference collectionRef = Firestore().collection('messages').document(id).collection('pastchats').document(copyId);
 
-    return new StreamBuilder (
+    return StreamBuilder<DocumentSnapshot> (
       stream: stream,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
@@ -777,6 +779,8 @@ class ChatScreenState extends State<ChatScreen> {
             strokeWidth: 2,
           );
         } else {
+          return CircularProgressIndicator(strokeWidth: 2,);
+
           beingCalled = snapshot.data['beingCalled'];
           chattingWith = snapshot.data['chattingWith'];
           createdAt = snapshot.data['createdAt'];
@@ -784,26 +788,23 @@ class ChatScreenState extends State<ChatScreen> {
           nickname = snapshot.data['nickname'];
           photoUrl = snapshot.data['photoUrl'];
 
-          collectionRef.setData(
-          {
-            'beingCalled': beingCalled,
-            'chattingWith': chattingWith,
-            'createdAt': createdAt,
-            "id" : id2,
-            'nickname': nickname,
-            'photoUrl': photoUrl,      
-          });
-
-          return CircularProgressIndicator(
-            strokeWidth: 2,
-          );
+          Firestore.instance.runTransaction((transaction) async {
+            await transaction.set(
+              collectionRef,
+              {
+                'beingCalled': beingCalled,
+                'chattingWith': chattingWith,
+                'createdAt': createdAt,
+                "id" : id2,
+                'nickname': nickname,
+                'photoUrl': photoUrl,  
+              },
+            );
+          }
+        );       
         }
       },
     );
-
-      
-    } else {
-      print('User already stored in past chats');
     }
-  }
+  
   }

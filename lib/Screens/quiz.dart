@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'dart:io';
  
 import 'package:day12_login/Animation/FadeAnimation.dart';
 import 'package:day12_login/Screens/grade.dart';
@@ -54,6 +55,7 @@ class _QuizState extends State<Quiz> {
     Person user = Provider.of<Person>(context);
     List<String> topics = ["Math", "Science", "Writing", "Language", "Reading"];
     
+    sleep(const Duration(milliseconds: 200));
  
     return StreamBuilder<UserData>(
       stream: Database(uid: user.uid).userData,
