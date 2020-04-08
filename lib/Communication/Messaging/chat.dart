@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:day12_login/Communication/const.dart';
+import 'package:day12_login/Communication/Messaging/const.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:day12_login/Models/user.dart';
@@ -8,14 +8,14 @@ import 'package:day12_login/Screens/home.dart';
 import 'package:day12_login/services/database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:day12_login/Communication/fullPhoto.dart';
+import 'package:day12_login/Communication/Messaging/fullPhoto.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'call.dart';
+import 'package:day12_login/Communication/Video_Chat/call.dart';
 
 class Chat extends StatelessWidget {
   final String peerId;
@@ -32,101 +32,77 @@ class Chat extends StatelessWidget {
     bool beingCalled;
     String chattingWith, createdAt, id, nickname, photoUrl;
     var peerName;
+    
 
-    User user = Provider.of<User>(context);
+    Person user = Provider.of<Person>(context);
 
     return StreamBuilder<Message>(
         stream: Database(uid: user.uid).messageData,
           builder: (context, snapshot) {
           // var userSnapshot = Provider.of<UserData>(context);
-            if (snapshot.hasData) {
-              messageData = snapshot.data;
-              beingCalled = messageData.beingCalled;
-              chattingWith = messageData.chattingWith;
-              createdAt = messageData.createdAt;
-              id = messageData.id;
-              nickname = messageData.nickname;
-              photoUrl = messageData.photoUrl;
+          if (snapshot.hasData) {
+            messageData = snapshot.data;
+            beingCalled = messageData.beingCalled;
+            chattingWith = messageData.chattingWith;
+            createdAt = messageData.createdAt;
+            id = messageData.id;
+            nickname = messageData.nickname;
+            photoUrl = messageData.photoUrl;
 
-              return StreamBuilder(
-                stream: Firestore.instance.collection('messages').snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    print(snapshot.data);
-                    ref = snapshot.data.documents[peerId];
-                    peerName = ref['nickname'];
+          return new Scaffold(
+            appBar: new AppBar(
+              title: Text(
+                "Chat",
+                style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+              ),
+              centerTitle: true,
+              actions: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(right: 20.0),
+                      child: GestureDetector(
+                        onTap: ()  {
+                          Firestore.instance.collection('messages').document(peerId).updateData({'beingCalled': true});
+                          var beingCalled = Database(uid: user.uid).call(peerId);
+                          print(beingCalled);
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CallPage(channelName: peerId,)));
+                        },
+                        child: Icon(
+                          Icons.video_call,
+                          size: 26.0
+                        )
+                      )
+                    ),
 
-                    return new Scaffold(
-                      appBar: new AppBar(
-                        title: Text(
-                          peerName.toString(),
-                          style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
+                      
+                      Padding(
+                        padding: const EdgeInsets.only(right: 0.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
+                          },
+                          child: Icon(
+                            Icons.arrow_back,
+                            size: 26.0,
+                            color: Colors.black
+                          )
                         ),
-                        centerTitle: true,
-                        actions: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(right: 20.0),
-                                child: GestureDetector(
-                                  onTap: ()  {
-                                    Firestore.instance.collection('messages').document(peerId).updateData({'beingCalled': true});
-                                    var beingCalled = Database(uid: user.uid).call(peerId);
-                                    print(beingCalled);
-                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CallPage(channelName: peerId,)));
-                                  },
-                                  child: Icon(
-                                    Icons.video_call,
-                                    size: 26.0
-                                  )
-                                )
-                              ),
-
-                                
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 0.0),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
-                                    },
-                                    child: Icon(
-                                      Icons.arrow_back,
-                                      size: 26.0,
-                                      color: Colors.black
-                                    )
-                                  ),
-                                )
-                              
-                            ],
-                          ),
-                        ],
-                      ),
-                      body: new ChatScreen(
-                        peerId: peerId,
-                        peerAvatar: peerAvatar,
-                        context: context,
-                      ),
-                    );
-                  } else {
-                    return 
-                      Container(
-                        color: Colors.blue,
-                        child: Text(
-                          peerName
-                        ),
-                    );
-                  }
-                },
-              );
-
-              
-
-              
-
-              
-        
+                      )
+                    
+                  ],
+                ),
+              ],
+            ),
+            body: new ChatScreen(
+              peerId: peerId,
+              peerAvatar: peerAvatar,
+              context: context,
+            ),
+          );
+        }
       }
-    });
+    );
   }
 }
 
@@ -192,7 +168,7 @@ class ChatScreenState extends State<ChatScreen> {
 
   readLocal() async {
 
-    User user = Provider.of<User>(context);
+    Person user = Provider.of<Person>(context);
     
     id = user.uid;
 
@@ -250,9 +226,13 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   void onSendMessage(String content, int type) {
+
+    
+
     // type: 0 = text, 1 = image, 2 = sticker
     if (content.trim() != '') {
       textEditingController.clear();
+      copyCollection(peerId);
 
       var documentReference = Firestore.instance
           .collection('messages')
@@ -491,8 +471,8 @@ class ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  Future<bool> onBackPress() async{
-    
+  Future<bool> onBackPress() async {
+
     if (isShowSticker) {
       setState(() {
         isShowSticker = false;
@@ -507,7 +487,7 @@ class ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    user = Provider.of<User>(context);
+    user = Provider.of<Person>(context);
     return WillPopScope(
       child: Stack(
         children: <Widget>[
@@ -775,4 +755,55 @@ class ChatScreenState extends State<ChatScreen> {
             ),
     );
   }
-}
+
+
+  copyCollection(String copyId) async {
+
+    bool beingCalled;
+    var createdAt;
+    String chattingWith, id2, nickname, photoUrl;
+    var stream = Firestore.instance.collection('messages').document(copyId).snapshots();
+
+    if (listMessage != null) {
+
+    DocumentReference collectionRef = Firestore().collection('messages').document(id).collection('pastchats').document(copyId);
+
+    return new StreamBuilder (
+      stream: stream,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          print('waiting...');  
+          return CircularProgressIndicator(
+            strokeWidth: 2,
+          );
+        } else {
+          beingCalled = snapshot.data['beingCalled'];
+          chattingWith = snapshot.data['chattingWith'];
+          createdAt = snapshot.data['createdAt'];
+          id2 = snapshot.data['id'];
+          nickname = snapshot.data['nickname'];
+          photoUrl = snapshot.data['photoUrl'];
+
+          collectionRef.setData(
+          {
+            'beingCalled': beingCalled,
+            'chattingWith': chattingWith,
+            'createdAt': createdAt,
+            "id" : id2,
+            'nickname': nickname,
+            'photoUrl': photoUrl,      
+          });
+
+          return CircularProgressIndicator(
+            strokeWidth: 2,
+          );
+        }
+      },
+    );
+
+      
+    } else {
+      print('User already stored in past chats');
+    }
+  }
+  }

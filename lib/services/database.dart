@@ -51,8 +51,8 @@ class Database {
 
  
   //convert the firebase user obj into User obj
-  User _getUser(FirebaseUser user){
-    return user != null ? User(uid:user.uid) : null;
+  Person _getUser(FirebaseUser user){
+    return user != null ? Person(uid:user.uid) : null;
   }
 
 

@@ -109,7 +109,7 @@ class _DropDownState extends State<DropDown> {
   @override
   Widget build(BuildContext context) {
 
-    User user = Provider.of<User>(context);
+    Person user = Provider.of<Person>(context);
     bool math, science, writing, language, reading;
     UserData userData;
     String name;

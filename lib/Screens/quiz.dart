@@ -51,7 +51,7 @@ class _QuizState extends State<Quiz> {
   @override
   Widget build(BuildContext context) {
 
-    User user = Provider.of<User>(context);
+    Person user = Provider.of<Person>(context);
     List<String> topics = ["Math", "Science", "Writing", "Language", "Reading"];
     
  

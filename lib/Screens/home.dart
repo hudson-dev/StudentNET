@@ -1,25 +1,26 @@
-import 'package:day12_login/Communication/calling.dart';
-import 'package:day12_login/Communication/chat.dart';
-import 'package:day12_login/Communication/texting.dart';
+import 'package:day12_login/Communication/Video_Chat/calling.dart';
+import 'package:day12_login/Communication/Messaging/chat.dart';
+import 'package:day12_login/Communication/Messaging/texting.dart';
 import 'package:day12_login/Models/user.dart';
 import 'package:day12_login/Screens/choose.dart';
-import 'package:day12_login/Screens/grade.dart';
 import 'package:day12_login/services/auth.dart';
 import 'package:day12_login/services/database.dart';
 import 'package:day12_login/services/routing.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:day12_login/Communication/call.dart';
+import 'package:day12_login/Communication/Video_Chat/call.dart';
 void main() => runApp(Home());
 /// This Widget is the main application widget.
 class Home extends StatelessWidget {
  static const String _title = 'Flutter Code Sample';
  @override
  Widget build(BuildContext context) {
-   User user = Provider.of<User>(context);
+   Person user = Provider.of<Person>(context);
    bool math, science, writing, language, reading;
    UserData userData;
    String name, photoUrl;
+
+   
   
    return StreamBuilder<UserData>(
      stream: Database(uid: user.uid).userData,

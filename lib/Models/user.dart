@@ -1,7 +1,7 @@
-class User{
+class Person{
   String uid;
 
-  User({this.uid});
+  Person({this.uid});
 }
 
 // MSWLR

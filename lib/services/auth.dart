@@ -8,8 +8,8 @@ class AuthService {
   Database database = new Database();
 
   //convert the firebase user obj into User obj
-  User _getUser(FirebaseUser user) {
-    return user != null ? User(uid: user.uid) : null;
+  Person _getUser(FirebaseUser user) {
+    return user != null ? Person(uid: user.uid) : null;
   }
 
   Database get getDatabase {
@@ -22,7 +22,7 @@ class AuthService {
   }
 
 
-  Stream<User> get user {
+  Stream<Person> get user {
     return _auth.onAuthStateChanged.map(_getUser);
   }
 
@@ -44,7 +44,7 @@ class AuthService {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       FirebaseUser user = result.user;
-      User val = _getUser(user);
+      Person val = _getUser(user);
       database = Database(uid: val.uid);
       await Database(uid: user.uid)
           .updateUserData(false, false, false, false, false, name, 0);
@@ -61,7 +61,7 @@ class AuthService {
       AuthResult result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       FirebaseUser user = result.user;
-      User val = _getUser(user);
+      Person val = _getUser(user);
       database = Database(uid: val.uid);
       print(user);
       return val;

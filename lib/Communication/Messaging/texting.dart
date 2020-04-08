@@ -11,14 +11,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'chat.dart';
-import 'package:day12_login/Communication/const.dart';
-import 'package:day12_login/Communication/settings.dart';
+import 'package:day12_login/Communication/Messaging/const.dart';
+import 'package:day12_login/Communication/Messaging/settings.dart';
 //import 'package:flutter_chat_demo/login.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../main.dart';
+import 'package:day12_login/main.dart';
 
 void main() => runApp(MyApp());
 
@@ -260,7 +260,7 @@ class TextingState extends State<Texting> {
             // List
             Container(
               child: StreamBuilder(
-                stream: Firestore.instance.collection('messages').snapshots(),
+                stream: Firestore.instance.collection('messages').document(currentUserId).collection('past_chats').snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Center(
@@ -336,7 +336,7 @@ class TextingState extends State<Texting> {
                     children: <Widget>[
                       Container(
                         child: Text(
-                          'Nickname: ${document['nickname'] ?? 'Not available'}',
+                          'Name: ${document['nickname'] ?? 'Not available'}',
                           style: TextStyle(color: primaryColor),
                         ),
                         alignment: Alignment.centerLeft,
@@ -344,7 +344,7 @@ class TextingState extends State<Texting> {
                       ),
                       Container(
                         child: Text(
-                          'About me: ${document['aboutMe'] ?? 'Not available'}',
+                          'About me: ${document['aboutMe'] ?? ' '}',
                           style: TextStyle(color: primaryColor),
                         ),
                         alignment: Alignment.centerLeft,
