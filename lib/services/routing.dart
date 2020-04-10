@@ -115,8 +115,16 @@ class _RoutingState extends State<Routing> {
                               getHelp(topic, grade)
                               .then((QuerySnapshot docs) {
                                 if(docs.documents.isNotEmpty) {
-                                  connectID = docs.documents[0].documentID;
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));;
+                                  if(docs.documents[0].documentID == person.uid) {
+                                    connectID = docs.documents[1].documentID;
+                                    setState(() => pressAttention2 = !pressAttention1);
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                  } else {
+                                    connectID = docs.documents[0].documentID;
+                                    setState(() => pressAttention2 = !pressAttention1);
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                  }
+                                
                                 } else {
                                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
                                   setState(() => pressAttention2 = !pressAttention0);
@@ -138,9 +146,16 @@ class _RoutingState extends State<Routing> {
                               getHelp(topic, grade)
                              .then((QuerySnapshot docs) {
                                 if(docs.documents.isNotEmpty) {
-                                  connectID = docs.documents[0].documentID;
-                                  setState(() => pressAttention2 = !pressAttention1);
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                  if(docs.documents[0].documentID == person.uid) {
+                                    connectID = docs.documents[1].documentID;
+                                    setState(() => pressAttention2 = !pressAttention1);
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                  } else {
+                                    connectID = docs.documents[0].documentID;
+                                    setState(() => pressAttention2 = !pressAttention1);
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                  }
+                                  
                                 } else {
                                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
                                   setState(() => pressAttention2 = !pressAttention1);
@@ -162,9 +177,15 @@ class _RoutingState extends State<Routing> {
                               getHelp(topic, grade)
                               .then((QuerySnapshot docs) {
                                 if(docs.documents.isNotEmpty) {
-                                  connectID = docs.documents[0].documentID;
-                                  setState(() => pressAttention2 = !pressAttention1);
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                  if(docs.documents[0].documentID == person.uid) {
+                                    connectID = docs.documents[1].documentID;
+                                    setState(() => pressAttention2 = !pressAttention1);
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                  } else {
+                                    connectID = docs.documents[0].documentID;
+                                    setState(() => pressAttention2 = !pressAttention1);
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                  }
                                 } else {
                                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
                                   setState(() => pressAttention2 = !pressAttention1);
@@ -185,9 +206,15 @@ class _RoutingState extends State<Routing> {
                              getHelp(topic, grade)
                               .then((QuerySnapshot docs) {
                                 if(docs.documents.isNotEmpty) {
-                                  connectID = docs.documents[0].documentID;
-                                  setState(() => pressAttention3 = !pressAttention3);
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                  if(docs.documents[0].documentID == person.uid) {
+                                    connectID = docs.documents[1].documentID;
+                                    setState(() => pressAttention2 = !pressAttention1);
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                  } else {
+                                    connectID = docs.documents[0].documentID;
+                                    setState(() => pressAttention2 = !pressAttention1);
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                  }
                                 } else {
                                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
                                   setState(() => pressAttention3 = !pressAttention3);
@@ -208,10 +235,15 @@ class _RoutingState extends State<Routing> {
                               getHelp(topic, grade)
                               .then((QuerySnapshot docs) {
                                 if(docs.documents.isNotEmpty) {
-                                  connectID = docs.documents[0].documentID;
-                                  setState(() => pressAttention4 = !pressAttention4);
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
-
+                                  if(docs.documents[0].documentID == person.uid) {
+                                    connectID = docs.documents[1].documentID;
+                                    setState(() => pressAttention2 = !pressAttention1);
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                  } else {
+                                    connectID = docs.documents[0].documentID;
+                                    setState(() => pressAttention2 = !pressAttention1);
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                  }
                                 } else {
                                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
                                   setState(() => pressAttention4 = !pressAttention4);
@@ -239,6 +271,8 @@ class _RoutingState extends State<Routing> {
         .where('grade', isEqualTo: grade)
         .getDocuments();
     }
+
+   
   }
 
     

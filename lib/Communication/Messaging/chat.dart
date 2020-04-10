@@ -14,6 +14,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:developer' as developer;
 
 import 'package:day12_login/Communication/Video_Chat/call.dart';
 
@@ -21,90 +22,92 @@ class Chat extends StatelessWidget {
   final String peerId;
   final String peerAvatar;
   DocumentSnapshot ss;
-  
-  Chat({Key key, @required this.peerId, @required this.peerAvatar}) : super(key: key);
+
+  Chat({Key key, @required this.peerId, @required this.peerAvatar})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
-    var ref; 
-    Message messageData;
+    var ref;
+    var messageData;
     bool beingCalled;
     String chattingWith, createdAt, id, nickname, photoUrl;
     var peerName;
-    
 
     Person user = Provider.of<Person>(context);
 
-    return StreamBuilder<Message>(
-        stream: Database(uid: user.uid).messageData,
-          builder: (context, snapshot) {
+    return StreamBuilder<DocumentSnapshot>(
+        stream: Firestore.instance
+            .collection('messages')
+            .document(peerId)
+            .snapshots(),
+        builder: (context, snapshot) {
           // var userSnapshot = Provider.of<UserData>(context);
           if (snapshot.hasData) {
             messageData = snapshot.data;
-            beingCalled = messageData.beingCalled;
-            chattingWith = messageData.chattingWith;
-            createdAt = messageData.createdAt;
-            id = messageData.id;
-            nickname = messageData.nickname;
-            photoUrl = messageData.photoUrl;
+            beingCalled = messageData['beingCalled'];
+            chattingWith = messageData['chattingWith'];
+            createdAt = messageData['createdAt'];
+            id = messageData['id'];
+            nickname = messageData['nickname'];
+            photoUrl = messageData['photoUrl'];
 
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(
-                "Chat",
-                style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
-              ),
-              centerTitle: true,
-              actions: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(right: 20.0),
-                      child: GestureDetector(
-                        onTap: ()  {
-                          Firestore.instance.collection('messages').document(peerId).updateData({'beingCalled': true});
-                          var beingCalled = Database(uid: user.uid).call(peerId);
-                          print(beingCalled);
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CallPage(channelName: peerId,)));
-                        },
-                        child: Icon(
-                          Icons.video_call,
-                          size: 26.0
-                        )
-                      )
-                    ),
-
-                      
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  nickname.toString(),
+                  style: TextStyle(
+                      color: primaryColor, fontWeight: FontWeight.bold),
+                ),
+                centerTitle: true,
+                actions: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Padding(
+                          padding: EdgeInsets.only(right: 20.0),
+                          child: GestureDetector(
+                              onTap: () {
+                                Firestore.instance
+                                    .collection('messages')
+                                    .document(peerId)
+                                    .updateData({'beingCalled': true});
+                                var beingCalled =
+                                    Database(uid: user.uid).call(peerId);
+                                print(beingCalled);
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CallPage(
+                                              channelName: peerId,
+                                            )));
+                              },
+                              child: Icon(Icons.video_call, size: 26.0))),
                       Padding(
                         padding: const EdgeInsets.only(right: 0.0),
                         child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
-                          },
-                          child: Icon(
-                            Icons.arrow_back,
-                            size: 26.0,
-                            color: Colors.black
-                          )
-                        ),
+                            onTap: () {
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Home()));
+                            },
+                            child: Icon(Icons.arrow_back,
+                                size: 26.0, color: Colors.black)),
                       )
-                    
-                  ],
-                ),
-              ],
-            ),
-            body: new ChatScreen(
-              peerId: peerId,
-              peerAvatar: peerAvatar,
-              context: context,
-            ),
-          );
-        } else {
-          return Container();
-        }
-      }
-    );
+                    ],
+                  ),
+                ],
+              ),
+              body: new ChatScreen(
+                peerId: peerId,
+                peerAvatar: peerAvatar,
+                context: context,
+              ),
+            );
+          } else {
+            return Container();
+          }
+        });
   }
 }
 
@@ -113,21 +116,30 @@ class ChatScreen extends StatefulWidget {
   final String peerAvatar;
   BuildContext context;
 
-  ChatScreen({Key key, @required this.peerId, @required this.peerAvatar,  @required this.context}) : super(key: key);
+  ChatScreen(
+      {Key key,
+      @required this.peerId,
+      @required this.peerAvatar,
+      @required this.context})
+      : super(key: key);
 
   @override
-  State createState() => new ChatScreenState(peerId: peerId, peerAvatar: peerAvatar, context: context);
+  State createState() => new ChatScreenState(
+      peerId: peerId, peerAvatar: peerAvatar, context: context);
 }
 
 class ChatScreenState extends State<ChatScreen> {
-  ChatScreenState({Key key, @required this.peerId, @required this.peerAvatar, @required this.context});
-  
+  ChatScreenState(
+      {Key key,
+      @required this.peerId,
+      @required this.peerAvatar,
+      @required this.context});
+
   BuildContext context;
   String peerId;
   String peerAvatar;
 
-
-  var listMessage;
+  List listMessage;
   String groupChatId;
   var prefs;
   var user;
@@ -138,8 +150,8 @@ class ChatScreenState extends State<ChatScreen> {
   String imageUrl;
   String id;
 
-
-  final TextEditingController textEditingController = new TextEditingController();
+  final TextEditingController textEditingController =
+      new TextEditingController();
   final ScrollController listScrollController = new ScrollController();
   final FocusNode focusNode = new FocusNode();
 
@@ -158,8 +170,6 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   void onFocusChange() {
-
-    
     if (focusNode.hasFocus) {
       // Hide sticker when keyboard appear
       setState(() {
@@ -169,9 +179,8 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   readLocal() async {
-
     Person user = Provider.of<Person>(context);
-    
+
     id = user.uid;
 
     if (id.hashCode <= peerId.hashCode) {
@@ -180,14 +189,13 @@ class ChatScreenState extends State<ChatScreen> {
       groupChatId = '$peerId-$id';
     }
 
-    Firestore.instance.collection('messages').document(id).updateData({'chattingWith': peerId});
+    Firestore.instance
+        .collection('messages')
+        .document(id)
+        .updateData({'chattingWith': peerId});
 
     setState(() {});
-              
   }
-
- 
-  
 
   Future getImage() async {
     imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -228,9 +236,6 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   void onSendMessage(String content, int type) {
-
-    
-
     // type: 0 = text, 1 = image, 2 = sticker
     if (content.trim() != '') {
       textEditingController.clear();
@@ -254,7 +259,8 @@ class ChatScreenState extends State<ChatScreen> {
           },
         );
       });
-      listScrollController.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+      listScrollController.animateTo(0.0,
+          duration: Duration(milliseconds: 300), curve: Curves.easeOut);
     } else {
       Fluttertoast.showToast(msg: 'Nothing to send');
     }
@@ -274,8 +280,12 @@ class ChatScreenState extends State<ChatScreen> {
                   ),
                   padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
                   width: 200.0,
-                  decoration: BoxDecoration(color: greyColor2, borderRadius: BorderRadius.circular(8.0)),
-                  margin: EdgeInsets.only(bottom: isLastMessageRight(index) ? 20.0 : 10.0, right: 10.0),
+                  decoration: BoxDecoration(
+                      color: greyColor2,
+                      borderRadius: BorderRadius.circular(8.0)),
+                  margin: EdgeInsets.only(
+                      bottom: isLastMessageRight(index) ? 20.0 : 10.0,
+                      right: 10.0),
                 )
               : document['type'] == 1
                   // Image
@@ -285,7 +295,8 @@ class ChatScreenState extends State<ChatScreen> {
                           child: CachedNetworkImage(
                             placeholder: (context, url) => Container(
                               child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(themeColor),
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(themeColor),
                               ),
                               width: 200.0,
                               height: 200.0,
@@ -319,11 +330,16 @@ class ChatScreenState extends State<ChatScreen> {
                         ),
                         onPressed: () {
                           Navigator.push(
-                              context, MaterialPageRoute(builder: (context) => FullPhoto(url: document['content'])));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      FullPhoto(url: document['content'])));
                         },
                         padding: EdgeInsets.all(0),
                       ),
-                      margin: EdgeInsets.only(bottom: isLastMessageRight(index) ? 20.0 : 10.0, right: 10.0),
+                      margin: EdgeInsets.only(
+                          bottom: isLastMessageRight(index) ? 20.0 : 10.0,
+                          right: 10.0),
                     )
                   // Sticker
                   : Container(
@@ -333,7 +349,9 @@ class ChatScreenState extends State<ChatScreen> {
                         height: 100.0,
                         fit: BoxFit.cover,
                       ),
-                      margin: EdgeInsets.only(bottom: isLastMessageRight(index) ? 20.0 : 10.0, right: 10.0),
+                      margin: EdgeInsets.only(
+                          bottom: isLastMessageRight(index) ? 20.0 : 10.0,
+                          right: 10.0),
                     ),
         ],
         mainAxisAlignment: MainAxisAlignment.end,
@@ -351,7 +369,8 @@ class ChatScreenState extends State<ChatScreen> {
                           placeholder: (context, url) => Container(
                             child: CircularProgressIndicator(
                               strokeWidth: 1.0,
-                              valueColor: AlwaysStoppedAnimation<Color>(themeColor),
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(themeColor),
                             ),
                             width: 35.0,
                             height: 35.0,
@@ -376,7 +395,9 @@ class ChatScreenState extends State<ChatScreen> {
                         ),
                         padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
                         width: 200.0,
-                        decoration: BoxDecoration(color: primaryColor, borderRadius: BorderRadius.circular(8.0)),
+                        decoration: BoxDecoration(
+                            color: primaryColor,
+                            borderRadius: BorderRadius.circular(8.0)),
                         margin: EdgeInsets.only(left: 10.0),
                       )
                     : document['type'] == 1
@@ -386,7 +407,8 @@ class ChatScreenState extends State<ChatScreen> {
                                 child: CachedNetworkImage(
                                   placeholder: (context, url) => Container(
                                     child: CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(themeColor),
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          themeColor),
                                     ),
                                     width: 200.0,
                                     height: 200.0,
@@ -398,7 +420,8 @@ class ChatScreenState extends State<ChatScreen> {
                                       ),
                                     ),
                                   ),
-                                  errorWidget: (context, url, error) => Material(
+                                  errorWidget: (context, url, error) =>
+                                      Material(
                                     child: Image.asset(
                                       'images/img_not_available.jpeg',
                                       width: 200.0,
@@ -415,12 +438,16 @@ class ChatScreenState extends State<ChatScreen> {
                                   height: 200.0,
                                   fit: BoxFit.cover,
                                 ),
-                                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8.0)),
                                 clipBehavior: Clip.hardEdge,
                               ),
                               onPressed: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) => FullPhoto(url: document['content'])));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => FullPhoto(
+                                            url: document['content'])));
                               },
                               padding: EdgeInsets.all(0),
                             ),
@@ -433,7 +460,9 @@ class ChatScreenState extends State<ChatScreen> {
                               height: 100.0,
                               fit: BoxFit.cover,
                             ),
-                            margin: EdgeInsets.only(bottom: isLastMessageRight(index) ? 20.0 : 10.0, right: 10.0),
+                            margin: EdgeInsets.only(
+                                bottom: isLastMessageRight(index) ? 20.0 : 10.0,
+                                right: 10.0),
                           ),
               ],
             ),
@@ -442,9 +471,13 @@ class ChatScreenState extends State<ChatScreen> {
             isLastMessageLeft(index)
                 ? Container(
                     child: Text(
-                      DateFormat('dd MMM kk:mm')
-                          .format(DateTime.fromMillisecondsSinceEpoch(int.parse(document['timestamp']))),
-                      style: TextStyle(color: greyColor, fontSize: 12.0, fontStyle: FontStyle.italic),
+                      DateFormat('dd MMM kk:mm').format(
+                          DateTime.fromMillisecondsSinceEpoch(
+                              int.parse(document['timestamp']))),
+                      style: TextStyle(
+                          color: greyColor,
+                          fontSize: 12.0,
+                          fontStyle: FontStyle.italic),
                     ),
                     margin: EdgeInsets.only(left: 50.0, top: 5.0, bottom: 5.0),
                   )
@@ -458,7 +491,10 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   bool isLastMessageLeft(int index) {
-    if ((index > 0 && listMessage != null && listMessage[index - 1]['idFrom'] == id) || index == 0) {
+    if ((index > 0 &&
+            listMessage != null &&
+            listMessage[index - 1]['idFrom'] == id) ||
+        index == 0) {
       return true;
     } else {
       return false;
@@ -466,7 +502,10 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   bool isLastMessageRight(int index) {
-    if ((index > 0 && listMessage != null && listMessage[index - 1]['idFrom'] != id) || index == 0) {
+    if ((index > 0 &&
+            listMessage != null &&
+            listMessage[index - 1]['idFrom'] != id) ||
+        index == 0) {
       return true;
     } else {
       return false;
@@ -474,13 +513,15 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   Future<bool> onBackPress() async {
-
     if (isShowSticker) {
       setState(() {
         isShowSticker = false;
       });
     } else {
-      Firestore.instance.collection('messages').document(id).updateData({'chattingWith': null});
+      Firestore.instance
+          .collection('messages')
+          .document(id)
+          .updateData({'chattingWith': null});
       Navigator.pop(context);
     }
 
@@ -618,7 +659,9 @@ class ChatScreenState extends State<ChatScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       ),
       decoration: new BoxDecoration(
-          border: new Border(top: new BorderSide(color: greyColor2, width: 0.5)), color: Colors.white),
+          border:
+              new Border(top: new BorderSide(color: greyColor2, width: 0.5)),
+          color: Colors.white),
       padding: EdgeInsets.all(5.0),
       height: 180.0,
     );
@@ -629,7 +672,8 @@ class ChatScreenState extends State<ChatScreen> {
       child: isLoading
           ? Container(
               child: Center(
-                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(themeColor)),
+                child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(themeColor)),
               ),
               color: Colors.white.withOpacity(0.8),
             )
@@ -637,7 +681,7 @@ class ChatScreenState extends State<ChatScreen> {
     );
   }
 
-   void _showModalSheet() {
+  void _showModalSheet() {
     showModalBottomSheet(
         context: context,
         builder: (builder) {
@@ -653,13 +697,10 @@ class ChatScreenState extends State<ChatScreen> {
   Widget buildBeingCalled() {
     var beingCalled = Database(uid: user.uid).call(peerId);
     print(beingCalled);
-    if(beingCalled == true) 
-    {
-      _showModalSheet(); 
+    if (beingCalled == true) {
+      _showModalSheet();
     } else {
-      return Container(
-
-      );
+      return Container();
     }
   }
 
@@ -723,14 +764,18 @@ class ChatScreenState extends State<ChatScreen> {
       width: double.infinity,
       height: 50.0,
       decoration: new BoxDecoration(
-          border: new Border(top: new BorderSide(color: greyColor2, width: 0.5)), color: Colors.white),
+          border:
+              new Border(top: new BorderSide(color: greyColor2, width: 0.5)),
+          color: Colors.white),
     );
   }
 
   Widget buildListMessage() {
     return Flexible(
       child: groupChatId == ''
-          ? Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(themeColor)))
+          ? Center(
+              child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(themeColor)))
           : StreamBuilder(
               stream: Firestore.instance
                   .collection('messages')
@@ -742,12 +787,15 @@ class ChatScreenState extends State<ChatScreen> {
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return Center(
-                      child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(themeColor)));
+                      child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(themeColor)));
                 } else {
                   listMessage = snapshot.data.documents;
                   return ListView.builder(
                     padding: EdgeInsets.all(10.0),
-                    itemBuilder: (context, index) => buildItem(index, snapshot.data.documents[index]),
+                    itemBuilder: (context, index) =>
+                        buildItem(index, snapshot.data.documents[index]),
                     itemCount: snapshot.data.documents.length,
                     reverse: true,
                     controller: listScrollController,
@@ -758,53 +806,20 @@ class ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  copyDocument(String copyId) {
+   Firestore.instance
+      .document('messages/${copyId}')
+      .get()
+      .then((DocumentSnapshot ds) async {
+    var userDoc = ds.data;
+    var copyRef =
+        Firestore.instance.document('messages/${user.uid}/pastChats/${copyId}');
 
-  copyDocument(String copyId) async {
+    await copyRef.setData(userDoc);
+  }).then((result) {
+    developer.log(result.toString());
 
-    bool beingCalled;
-    var createdAt;
-    String chattingWith, id2, nickname, photoUrl;
-    var stream = Firestore.instance.collection('messages').document(copyId).snapshots();
-
-    
-
-    DocumentReference collectionRef = Firestore().collection('messages').document(id).collection('pastchats').document(copyId);
-
-    return StreamBuilder<DocumentSnapshot> (
-      stream: stream,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          print('waiting...');  
-          return CircularProgressIndicator(
-            strokeWidth: 2,
-          );
-        } else {
-          return CircularProgressIndicator(strokeWidth: 2,);
-
-          beingCalled = snapshot.data['beingCalled'];
-          chattingWith = snapshot.data['chattingWith'];
-          createdAt = snapshot.data['createdAt'];
-          id2 = snapshot.data['id'];
-          nickname = snapshot.data['nickname'];
-          photoUrl = snapshot.data['photoUrl'];
-
-          Firestore.instance.runTransaction((transaction) async {
-            await transaction.set(
-              collectionRef,
-              {
-                'beingCalled': beingCalled,
-                'chattingWith': chattingWith,
-                'createdAt': createdAt,
-                "id" : id2,
-                'nickname': nickname,
-                'photoUrl': photoUrl,  
-              },
-            );
-          }
-        );       
-        }
-      },
-    );
-    }
-  
+    return 'succesful in copying data';
+  });
   }
+}

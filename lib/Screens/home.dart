@@ -20,7 +20,7 @@ class Home extends StatelessWidget {
    UserData userData;
    String name, photoUrl;
 
-   
+   if(user.uid == null) {CircularProgressIndicator();} else {
   
    return StreamBuilder<UserData>(
      stream: Database(uid: user.uid).userData,
@@ -116,9 +116,10 @@ class Home extends StatelessWidget {
        ),
      );
    } else {
-     return Container();
+     return CircularProgressIndicator();
    }
  }); 
+   }
  }
 }
  

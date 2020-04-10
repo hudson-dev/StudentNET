@@ -260,7 +260,7 @@ class TextingState extends State<Texting> {
             // List
             Container(
               child: StreamBuilder(
-                stream: Firestore.instance.collection('messages').document(currentUserId).collection('past_chats').snapshots(),
+                stream: Firestore.instance.collection('messages').document(currentUserId).collection('pastChats').snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Center(
