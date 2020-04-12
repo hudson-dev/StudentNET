@@ -14,8 +14,6 @@ class Database {
     uidCollection = Firestore.instance.collection("active").document(uid);
     messageCollection = Firestore.instance.collection("messages").document(uid);
 
-    
-
     await messageCollection.setData(
     {
       'nickname': name,

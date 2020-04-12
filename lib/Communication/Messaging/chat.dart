@@ -103,6 +103,7 @@ class Chat extends StatelessWidget {
                 peerAvatar: peerAvatar,
                 context: context,
               ),
+              
             );
           } else {
             return Container();
@@ -681,29 +682,6 @@ class ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  void _showModalSheet() {
-    showModalBottomSheet(
-        context: context,
-        builder: (builder) {
-          return new Container(
-            color: Colors.greenAccent,
-            child: new Center(
-              child: new Text("You are being called by "),
-            ),
-          );
-        });
-  }
-
-  Widget buildBeingCalled() {
-    var beingCalled = Database(uid: user.uid).call(peerId);
-    print(beingCalled);
-    if (beingCalled == true) {
-      _showModalSheet();
-    } else {
-      return Container();
-    }
-  }
-
   Widget buildInput() {
     return Container(
       child: Row(
@@ -821,5 +799,52 @@ class ChatScreenState extends State<ChatScreen> {
 
     return 'succesful in copying data';
   });
+  
+
+  Firestore.instance
+      .document('messages/${user.uid}')
+      .get()
+      .then((DocumentSnapshot ds) async {
+    var userDocSelf = ds.data;
+    var copyRefSelf =
+        Firestore.instance.document('messages/${copyId}/pastChats/${user.uid}');
+
+    await copyRefSelf.setData(userDocSelf);
+  }).then((result) {
+    developer.log(result.toString());
+
+    return 'succesful in copying data';
+  });
+  }
+}
+
+class MyFloatingButton extends StatefulWidget {
+  @override
+  _MyFloatingButtonState createState() => _MyFloatingButtonState();
+}
+
+class _MyFloatingButtonState extends State<MyFloatingButton> {
+  bool _show = false;
+  @override
+  Widget build(BuildContext context) {
+    return _show 
+    ? FloatingActionButton(
+      onPressed: () {
+        var sheetController = showBottomSheet(
+          context: context,
+          builder: (context) => Container(
+            height: 250,
+            color: Colors.cyan
+          )
+        );
+        _showButton(false);
+        sheetController.closed.then((value) => _showButton(true));
+      },
+    ): Container();
+  }
+  void _showButton(bool value) {
+    setState(() {
+      _show = value;
+    });
   }
 }

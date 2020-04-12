@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:day12_login/Communication/Video_Chat/calling.dart';
 import 'package:day12_login/Communication/Messaging/chat.dart';
 import 'package:day12_login/Communication/Messaging/texting.dart';
 import 'package:day12_login/Models/user.dart';
+import 'package:day12_login/Notifications/messageHandler.dart';
+import 'package:day12_login/Notifications/messaging_widget.dart';
 import 'package:day12_login/Screens/choose.dart';
 import 'package:day12_login/services/auth.dart';
 import 'package:day12_login/services/database.dart';
@@ -11,14 +15,38 @@ import 'package:provider/provider.dart';
 import 'package:day12_login/Communication/Video_Chat/call.dart';
 void main() => runApp(Home());
 /// This Widget is the main application widget.
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
  static const String _title = 'Flutter Code Sample';
+
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+
+  bool show = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+
+  }
+
+  // Widget _initializeTimer() {
+  //   _timer = Timer.periodic(const Duration(seconds: 7), (_) => setState(() {
+  //   show = false;
+  //   return Container();
+  //   }));
+  // }
+
  @override
  Widget build(BuildContext context) {
    Person user = Provider.of<Person>(context);
    bool math, science, writing, language, reading;
    UserData userData;
    String name, photoUrl;
+   
 
    if(user.uid == null) {CircularProgressIndicator();} else {
   
@@ -37,16 +65,20 @@ class Home extends StatelessWidget {
           photoUrl = userData.photoUrl;
           
           return MaterialApp(
-     title: _title,
+     title: Home._title,
      home: Scaffold(
        body: Container(
          color: Colors.grey[200],
          child: SafeArea(
            child: Column(
              children: <Widget>[
-               Row(
-               
+              SizedBox(
+                height: 100,
+                child: MessageHandler(),
+              ), 
+              Row(
                  children: <Widget>[
+                   
                    Align(
                      alignment: Alignment.topLeft,
                      child: IconButton(
