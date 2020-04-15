@@ -17,61 +17,70 @@ class MessageHandler extends StatefulWidget {
 class _MessageHandlerState extends State<MessageHandler> {
   final Firestore _db = Firestore.instance;
   final FirebaseMessaging _fcm = FirebaseMessaging();
+  Person user;
 
   StreamSubscription iosSubscription;
-
+  
   @override
-  void initState() {
+  Future<void> initState() async {
     super.initState();
-    if (Platform.isIOS) {
-      iosSubscription = _fcm.onIosSettingsRegistered.listen((data) {
-        print(data);
+    
+    user = Provider.of<Person>(context);
+
+    if(user != null) {
+
+      if (Platform.isIOS) {
+        iosSubscription = _fcm.onIosSettingsRegistered.listen((data) {
+          print(data);
+          _saveDeviceToken();
+        });
+
+        _fcm.requestNotificationPermissions(IosNotificationSettings());
+      } else {
         _saveDeviceToken();
-      });
+      }
 
-      _fcm.requestNotificationPermissions(IosNotificationSettings());
-    } else {
-      _saveDeviceToken();
-    }
+      _fcm.configure(
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+          // final snackbar = SnackBar(
+          //   content: Text(message['notification']['title']),
+          //   action: SnackBarAction(
+          //     label: 'Go',
+          //     onPressed: () => null,
+          //   ),
+          // );
 
-    _fcm.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        // final snackbar = SnackBar(
-        //   content: Text(message['notification']['title']),
-        //   action: SnackBarAction(
-        //     label: 'Go',
-        //     onPressed: () => null,
-        //   ),
-        // );
-
-        // Scaffold.of(context).showSnackBar(snackbar);
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                content: ListTile(
-                  title: Text(message['notification']['title']),
-                  subtitle: Text(message['notification']['body']),
-                ),
-                actions: <Widget>[
-                  FlatButton(
-                    color: Colors.amber,
-                    child: Text('Dismiss'),
-                    onPressed: () => Navigator.of(context).pop(),
+          // Scaffold.of(context).showSnackBar(snackbar);
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  content: ListTile(
+                    title: Text(message['notification']['title']),
+                    subtitle: Text(message['notification']['body']),
                   ),
-                ],
-              ),
-        );
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-        // TODO optional
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-        // TODO optional
-      },
-    );
+                  actions: <Widget>[
+                    FlatButton(
+                      color: Colors.amber,
+                      child: Text('Dismiss'),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+          );
+        },
+        onLaunch: (Map<String, dynamic> message) async {
+          print("onLaunch: $message");
+          // TODO optional
+        },
+        onResume: (Map<String, dynamic> message) async {
+          print("onResume: $message");
+          // TODO optional
+        },
+      );
+    } else {
+      print("unable to grab user");
+    }
   }
 
   @override
@@ -83,26 +92,26 @@ class _MessageHandlerState extends State<MessageHandler> {
   @override
   Widget build(BuildContext context) {
     // _handleMessages(context);
-    return Container(
-      child: Text("Message handler")
-    );
+    
     
   }
 
   /// Get the token, save it to the database for current user
   _saveDeviceToken() async {
     // Get the current user
-    Person user = Provider.of<Person>(context);
     String uid = user.uid;
     // FirebaseUser user = await _auth.currentUser();
 
     // Get the token for this device
     String fcmToken = await _fcm.getToken().then((value) {
-      var tokens = _db
-          .collection('messages')
-          .document(uid)
-          .collection('tokens')
-          .document(value);
+      // var tokens = _db
+      //     .collection('messages')
+      //     .document(uid)
+      //     .collection('tokens')
+      //     .document(value);
+
+      var tokens =
+        _db.document('messages/${uid}/tokens/${value}');
 
       tokens.setData({
         'token': value,
