@@ -121,7 +121,7 @@ class _MessageHandlerState extends State<MessageHandler> {
     }) ;
 
     // Save it to Firestore
-    if (fcmToken != null) {
+    if (fcmToken == null) {
       print('invalid token');
     }
   }
