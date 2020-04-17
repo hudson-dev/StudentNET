@@ -9,25 +9,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 
-class MessageHandler extends StatefulWidget {
+class MessageHandle extends StatefulWidget {
+
+  String uid;
+
+  MessageHandle(this.uid);
+
   @override
-  _MessageHandlerState createState() => _MessageHandlerState();
+  _MessageHandleState createState() => _MessageHandleState(uid);
 }
 
-class _MessageHandlerState extends State<MessageHandler> {
+class _MessageHandleState extends State<MessageHandle> {
   final Firestore _db = Firestore.instance;
   final FirebaseMessaging _fcm = FirebaseMessaging();
   Person user;
 
   StreamSubscription iosSubscription;
+
+  String uid;
+
+  _MessageHandleState(this.uid);
   
   @override
-  Future<void> initState() async {
+  Future<void> initState()   {
     super.initState();
     
-    user = Provider.of<Person>(context);
-
-    if(user != null) {
+    
 
       if (Platform.isIOS) {
         iosSubscription = _fcm.onIosSettingsRegistered.listen((data) {
@@ -78,9 +85,6 @@ class _MessageHandlerState extends State<MessageHandler> {
           // TODO optional
         },
       );
-    } else {
-      print("unable to grab user");
-    }
   }
 
   @override
@@ -93,13 +97,14 @@ class _MessageHandlerState extends State<MessageHandler> {
   Widget build(BuildContext context) {
     // _handleMessages(context);
     
-    
+    return Container(
+      child: Text('Notifications'),
+    );
   }
 
   /// Get the token, save it to the database for current user
   _saveDeviceToken() async {
     // Get the current user
-    String uid = user.uid;
     // FirebaseUser user = await _auth.currentUser();
 
     // Get the token for this device
@@ -121,9 +126,6 @@ class _MessageHandlerState extends State<MessageHandler> {
     }) ;
 
     // Save it to Firestore
-    if (fcmToken == null) {
-      print('invalid token');
-    }
   }
 
   /// Subscribe the user to a topic

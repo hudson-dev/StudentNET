@@ -10,6 +10,7 @@ import 'package:day12_login/Screens/choose.dart';
 import 'package:day12_login/services/auth.dart';
 import 'package:day12_login/services/database.dart';
 import 'package:day12_login/services/routing.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:day12_login/Communication/Video_Chat/call.dart';
@@ -46,6 +47,8 @@ class _HomeState extends State<Home> {
    bool math, science, writing, language, reading;
    UserData userData;
    String name, photoUrl;
+   FirebaseMessaging fcm = new FirebaseMessaging();
+   var token = fcm.getToken();
    
 
    if(user.uid == null) {CircularProgressIndicator();} else {
@@ -73,8 +76,8 @@ class _HomeState extends State<Home> {
            child: Column(
              children: <Widget>[
               SizedBox(
-                height: 100,
-                child: MessageHandler(),
+                height: 50,
+                child: MessageHandle(user.uid),
               ), 
               Row(
                  children: <Widget>[
@@ -139,8 +142,6 @@ class _HomeState extends State<Home> {
                    style: TextStyle(fontSize: 30)
                    ),
                ),
-              
-              
              ]
              ),
          ),
