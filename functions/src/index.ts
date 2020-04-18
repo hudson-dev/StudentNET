@@ -11,12 +11,16 @@ export const sendToDevice = functions.firestore
 
 
         const message = snapshot.data();
-        if (message != null) {
+        if (message != null) { 
             const querySnapshot = await db
-                .collection('active')
+                .collection('messages')
                 .doc(message.idTo)
                 .collection('tokens')
                 .get();
+
+        console.log("testing");
+        console.log(message.idTo);
+        console.log(querySnapshot);
 
         const tokens = querySnapshot.docs.map(snap => snap.id);
 
@@ -30,7 +34,8 @@ export const sendToDevice = functions.firestore
         };
 
         return fcm.sendToDevice(tokens, payload);
-} else {
-    return undefined
-}
+        
+        } else {
+            return undefined
+        }
     });
