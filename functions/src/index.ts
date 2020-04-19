@@ -7,7 +7,7 @@ const fcm = admin.messaging();
 
 export const sendToDevice = functions.firestore
     .document('messages/{groupChatId}/{chatId}/{message}')
-    .onCreate(async snapshot => {
+    .onCreate(async (snapshot: { data: () => any; }) => {
 
 
         const message = snapshot.data();
@@ -22,12 +22,14 @@ export const sendToDevice = functions.firestore
         console.log(message.idTo);
         console.log(querySnapshot);
 
-        const tokens = querySnapshot.docs.map(snap => snap.id);
+        //const personFrom = db.collection('messages').doc(message.idFrom).data();
+
+        const tokens = querySnapshot.docs.map((snap: { id: any; }) => snap.id);
 
         const payload: admin.messaging.MessagingPayload = {
             notification: {
-                title: 'New Message!',
-                body: 'message: ${message.content}',
+                title: "New Message",
+                body: message.content,
                 icon: 'your-icon-url',
                 click_action: 'FLUTTER_NOTIFICATION_CLICK'
             }

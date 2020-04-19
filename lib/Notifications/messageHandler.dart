@@ -59,7 +59,7 @@ class _MessageHandleState extends State<MessageHandle> {
           // );
 
           // Scaffold.of(context).showSnackBar(snackbar);
-          showDialog(
+          return showDialog(
             context: context,
             builder: (context) => AlertDialog(
                   content: ListTile(
@@ -68,7 +68,7 @@ class _MessageHandleState extends State<MessageHandle> {
                   ),
                   actions: <Widget>[
                     FlatButton(
-                      color: Colors.amber,
+                      color: Colors.blue,
                       child: Text('Dismiss'),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
