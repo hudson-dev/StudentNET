@@ -98,7 +98,6 @@ class _MessageHandleState extends State<MessageHandle> {
     // _handleMessages(context);
     
     return Container(
-      child: Text('Notifications'),
     );
   }
 

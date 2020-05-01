@@ -199,12 +199,12 @@ class _ResetPageState extends State<ResetPage> {
         if(change == true) {
           setState(() {
             unCheck = "";
-            check = "Successfully reset password!";
+            check = "We've sent an email to reset your password!";
           });
         } else {
           setState(() {
             check = "";
-            unCheck = "Unable to reset password!";
+            unCheck = "Not a valid account email!";
           });
         }
         

@@ -366,6 +366,7 @@ class TextingState extends State<Texting> {
                     builder: (context) => Chat(
                           peerId: document.documentID,
                           peerAvatar: document['photoUrl'],
+                          username: currentUserId
                         )));
           },
           color: greyColor2,

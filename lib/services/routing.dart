@@ -9,6 +9,7 @@ import 'package:day12_login/Screens/home.dart';
 import 'package:day12_login/services/auth.dart';
 import 'package:day12_login/services/database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:provider/provider.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
@@ -32,7 +33,7 @@ class _RoutingState extends State<Routing> {
  final Firestore db = Firestore.instance;
 
  bool math, science, writing, language, reading;
-  UserData userData;
+  var userData;
   String name, photoUrl;
   int grade;
   bool buttonColor = false;
@@ -47,37 +48,48 @@ class _RoutingState extends State<Routing> {
   var connectID;
   var test;
 
-  
-
-
-
-
  @override
  Widget build(BuildContext context) {
 
    Person person = Provider.of<Person>(context); 
+
+  //  return StreamBuilder<DocumentSnapshot>(
+  //       stream: Firestore.instance
+  //           .collection('messages')
+  //           .document(peerId)
+  //           .snapshots(),
+  //       builder: (context, snapshot) {
+  //         // var userSnapshot = Provider.of<UserData>(context);
+  //         if (snapshot.hasData) {
+  //           messageData = snapshot.data;
+  //           beingCalled = messageData['beingCalled'];
+  //           chattingWith = messageData['chattingWith'];
+  //           createdAt = messageData['createdAt'];
+  //           id = messageData['id'];
+  //           nickname = messageData['nickname'];
+  //           photoUrl = messageData['photoUrl'];
+
    
-   StreamBuilder<UserData>(
-     stream: Database(uid: person.uid).userData,
-       builder: (context, snapshot) {
+   return StreamBuilder<DocumentSnapshot>(
+     stream: Firestore.instance
+            .collection('active')
+            .document(person.uid)
+            .snapshots(),
+        builder: (context, snapshot) {
        // var userSnapshot = Provider.of<UserData>(context);
          if (snapshot.hasData) {
           userData = snapshot.data;
-          math = userData.math;
-          science = userData.science;
-          writing = userData.writing;
-          language = userData.language;
-          reading = userData.reading;
-          name = userData.name;
-          grade = userData.grade;
-          photoUrl = userData.photoUrl;
+          math = userData['math'];
+          science = userData['science'];
+          writing = userData['writing'];
+          language = userData['language'];
+          reading = userData['reading'];
+          name = userData['name'];
+          grade = userData['grade'];
+          photoUrl = userData['photoUrl'];
           
-   }
- }); 
- 
 
-
-    return MaterialApp(
+          return MaterialApp(
       
       title: Routing._title,
             home: Scaffold(
@@ -106,7 +118,7 @@ class _RoutingState extends State<Routing> {
                         Container(
                           padding: const EdgeInsets.all(8),
                           child: FlatButton(
-                            child: Text('Math'),
+                            child: Text("Math"),
                             color: pressAttention0 ? active : inActive,
 
                             onPressed: () { 
@@ -118,11 +130,11 @@ class _RoutingState extends State<Routing> {
                                   if(docs.documents[0].documentID == person.uid) {
                                     connectID = docs.documents[1].documentID;
                                     setState(() => pressAttention0 = !pressAttention0);
-                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ', username: name)));
                                   } else {
                                     connectID = docs.documents[0].documentID;
                                     setState(() => pressAttention0 = !pressAttention0);
-                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ', username: name)));
                                   }
                                 
                                 } else {
@@ -149,11 +161,11 @@ class _RoutingState extends State<Routing> {
                                   if(docs.documents[0].documentID == person.uid) {
                                     connectID = docs.documents[1].documentID;
                                     setState(() => pressAttention1 = !pressAttention1);
-                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ', username: name)));
                                   } else {
                                     connectID = docs.documents[0].documentID;
                                     setState(() => pressAttention1 = !pressAttention1);
-                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ', username: name)));
                                   }
                                   
                                 } else {
@@ -180,11 +192,11 @@ class _RoutingState extends State<Routing> {
                                   if(docs.documents[0].documentID == person.uid) {
                                     connectID = docs.documents[1].documentID;
                                     setState(() => pressAttention2 = !pressAttention1);
-                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ', username: name)));
                                   } else {
                                     connectID = docs.documents[0].documentID;
                                     setState(() => pressAttention2 = !pressAttention1);
-                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ', username: name)));
                                   }
                                 } else {
                                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
@@ -209,11 +221,11 @@ class _RoutingState extends State<Routing> {
                                   if(docs.documents[0].documentID == person.uid) {
                                     connectID = docs.documents[1].documentID;
                                     setState(() => pressAttention3 = !pressAttention3);
-                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ', username: name)));
                                   } else {
                                     connectID = docs.documents[0].documentID;
                                     setState(() => pressAttention3 = !pressAttention3);
-                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ', username: name)));
                                   }
                                 } else {
                                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
@@ -238,11 +250,11 @@ class _RoutingState extends State<Routing> {
                                   if(docs.documents[0].documentID == person.uid) {
                                     connectID = docs.documents[1].documentID;
                                     setState(() => pressAttention4 = !pressAttention4);
-                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ', username: name)));
                                   } else {
                                     connectID = docs.documents[0].documentID;
                                     setState(() => pressAttention4 = !pressAttention4);
-                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ')));
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Chat(peerId: connectID, peerAvatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFile%3ACircle-icons-profile.svg&psig=AOvVaw2UrpVRemI5oO7yRxwcjvpV&ust=1585635848126000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODIy_7HwegCFQAAAAAdAAAAABAQ', username: name)));
                                   }
                                 } else {
                                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
@@ -262,6 +274,22 @@ class _RoutingState extends State<Routing> {
               ),
               ),
             );
+   } else {
+     return Container(
+      color: Colors.brown[100],
+      child: Center(
+        child: SpinKitFoldingCube(
+          color: Colors.blue[200],
+          size: 50
+        ),
+      ),
+    );
+   }
+ }); 
+ 
+
+
+    
           }
 
     getHelp(String topic, int grade) {

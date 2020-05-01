@@ -21,9 +21,10 @@ import 'package:day12_login/Communication/Video_Chat/call.dart';
 class Chat extends StatelessWidget {
   final String peerId;
   final String peerAvatar;
+  final String username;
   DocumentSnapshot ss;
 
-  Chat({Key key, @required this.peerId, @required this.peerAvatar})
+  Chat({Key key, @required this.peerId, @required this.peerAvatar, @required this.username})
       : super(key: key);
 
   @override
@@ -34,8 +35,6 @@ class Chat extends StatelessWidget {
     String chattingWith, createdAt, id, nickname, photoUrl;
     var peerName;
 
-    Person user = Provider.of<Person>(context);
-
     return StreamBuilder<DocumentSnapshot>(
         stream: Firestore.instance
             .collection('messages')
@@ -44,6 +43,7 @@ class Chat extends StatelessWidget {
         builder: (context, snapshot) {
           // var userSnapshot = Provider.of<UserData>(context);
           if (snapshot.hasData) {
+
             messageData = snapshot.data;
             beingCalled = messageData['beingCalled'];
             chattingWith = messageData['chattingWith'];
@@ -52,6 +52,7 @@ class Chat extends StatelessWidget {
             nickname = messageData['nickname'];
             photoUrl = messageData['photoUrl'];
 
+    Person user = Provider.of<Person>(context);
             return Scaffold(
               appBar: AppBar(
                 title: Text(
@@ -102,31 +103,35 @@ class Chat extends StatelessWidget {
                 peerId: peerId,
                 peerAvatar: peerAvatar,
                 context: context,
+                username: username,
               ),
               
             );
-          } else {
+            } else {
             return Container();
           }
         });
+          
   }
 }
 
 class ChatScreen extends StatefulWidget {
   final String peerId;
   final String peerAvatar;
+  final String username;
   BuildContext context;
 
   ChatScreen(
       {Key key,
       @required this.peerId,
       @required this.peerAvatar,
+      @required this.username,
       @required this.context})
       : super(key: key);
 
   @override
   State createState() => new ChatScreenState(
-      peerId: peerId, peerAvatar: peerAvatar, context: context);
+      peerId: peerId, peerAvatar: peerAvatar, context: context, username: username);
 }
 
 class ChatScreenState extends State<ChatScreen> {
@@ -134,11 +139,12 @@ class ChatScreenState extends State<ChatScreen> {
       {Key key,
       @required this.peerId,
       @required this.peerAvatar,
-      @required this.context});
+      @required this.context,  @required this.username});
 
   BuildContext context;
   String peerId;
   String peerAvatar;
+  String username;
 
   List listMessage;
   String groupChatId;
@@ -149,7 +155,9 @@ class ChatScreenState extends State<ChatScreen> {
   bool isLoading;
   bool isShowSticker;
   String imageUrl;
+  //here
   String id;
+  
 
   final TextEditingController textEditingController =
       new TextEditingController();
@@ -183,6 +191,10 @@ class ChatScreenState extends State<ChatScreen> {
     Person user = Provider.of<Person>(context);
 
     id = user.uid;
+
+
+
+
 
     if (id.hashCode <= peerId.hashCode) {
       groupChatId = '$id-$peerId';
@@ -237,6 +249,7 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   void onSendMessage(String content, int type) {
+    
     // type: 0 = text, 1 = image, 2 = sticker
     if (content.trim() != '') {
       textEditingController.clear();
@@ -247,6 +260,25 @@ class ChatScreenState extends State<ChatScreen> {
           .document(groupChatId)
           .collection(groupChatId)
           .document(DateTime.now().millisecondsSinceEpoch.toString());
+          
+          // StreamBuilder(
+          // stream: Firestore.instance
+          //     .collection('messages')
+          //     .document(id)
+          //     .snapshots(), builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) { 
+          //       if(snapshot.hasData) {
+          //         nameFrom = "test";
+          //         // nameFrom = snapshot.data['nickname'];
+          //         waiting = false;
+          //         if(nameFrom == null) {
+          //           nameFrom = "unable to retrieve name";
+          //         }
+          //       } else {
+          //         print('waiting');
+          //         waiting = true;
+          //       }
+          //      },);
+
 
       Firestore.instance.runTransaction((transaction) async {
         await transaction.set(
@@ -256,7 +288,8 @@ class ChatScreenState extends State<ChatScreen> {
             'idTo': peerId,
             'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
             'content': content,
-            'type': type
+            'type': type,
+            'personFrom' : username
           },
         );
       });

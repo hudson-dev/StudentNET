@@ -25,7 +25,7 @@ class AuthService {
   Stream<Person> get user {
     return _auth.onAuthStateChanged.map(_getUser);
   }
-
+  
   //Method to sign In Anonymously
   Future signInAnon() async {
     try {

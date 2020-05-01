@@ -21,6 +21,8 @@ class MyApp extends StatelessWidget {
       providers: [
         StreamProvider<Person>(create: (_) => AuthService().user),
         StreamProvider<Message>(create: (_) => Database().messageData),
+        StreamProvider<UserData>(create: (_) => Database().userData),
+
       ],
         child: MaterialApp(
         home: Choose(),

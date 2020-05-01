@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { DocumentBuilder } from 'firebase-functions/lib/providers/firestore';
+//import { DocumentBuilder } from 'firebase-functions/lib/providers/firestore';
 //import { DocumentBuilder } from 'firebase-functions/lib/providers/firestore';
 //import { DocumentBuilder } from 'firebase-functions/lib/providers/firestore';
 admin.initializeApp();
@@ -22,9 +22,7 @@ export const sendToDevice = functions.firestore
                 .collection('tokens')
                 .get();
 
-        console.log("testing");
-        console.log(message.idTo);
-        console.log(querySnapshot);
+        //console.log(querySnapshot);
 
 
         // functions.firestore
@@ -36,8 +34,8 @@ export const sendToDevice = functions.firestore
         
         
         
-        const personFrom = await db.collection('messages').doc(message.idFrom).get();
-        const data = (await personFrom).data; 
+        //const personFrom = await db.collection('messages').doc(message.idFrom).get();
+        //const data = (await personFrom).data; 
 
         //var name = data.nickname;
 
@@ -45,7 +43,7 @@ export const sendToDevice = functions.firestore
 
         const payload: admin.messaging.MessagingPayload = {
             notification: {
-                title: "New Message from " + personFrom + "!",
+                title: "New Message from " + message.personFrom + "!",
                 body: message.content,
                 icon: 'your-icon-url',
                 click_action: 'FLUTTER_NOTIFICATION_CLICK'
@@ -65,4 +63,4 @@ export const sendToDevice = functions.firestore
 //     .onCreate(async (snapshot: { data: () => any; }) => {
 //         const data = snapshot.data();
 //         personFrom = data.name;
-//     });
+//     });  
