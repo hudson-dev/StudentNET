@@ -7,16 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+import 'package:day12_login/Communication/Video_Chat/call.dart';
+
+// grab message content from firebase then display if it is a message or not
+
 // import 'package:firebase_auth/firebase_auth.dart';
 
 class MessageHandle extends StatefulWidget {
 
   String uid;
+  bool displayMessage;
 
-  MessageHandle(this.uid);
+  MessageHandle(this.uid, this.displayMessage);
 
   @override
-  _MessageHandleState createState() => _MessageHandleState(uid);
+  _MessageHandleState createState() => _MessageHandleState(uid, displayMessage);
 }
 
 class _MessageHandleState extends State<MessageHandle> {
@@ -27,8 +32,9 @@ class _MessageHandleState extends State<MessageHandle> {
   StreamSubscription iosSubscription;
 
   String uid;
+  bool displayMessage;
 
-  _MessageHandleState(this.uid);
+  _MessageHandleState(this.uid, this.displayMessage);
   
   @override
   Future<void> initState()   {
@@ -58,8 +64,35 @@ class _MessageHandleState extends State<MessageHandle> {
           //   ),
           // );
 
+          var type = message['data']['type'].toString();
+
+
+          // return showDialog(
+          //   context: context,
+          //   builder: (context) => AlertDialog(
+          //         content: ListTile(
+          //           title: Text(message['notification']['title']),
+          //           subtitle: Text(message['notification']['body']),
+          //         ),
+          //         actions: <Widget>[
+          //           FlatButton(
+          //             color: Colors.blue,
+          //             child: Text('Join'),
+          //             onPressed: () => Navigator.pushReplacement(
+          //                           context,
+          //                           MaterialPageRoute(
+          //                               builder: (context) => CallPage(
+          //                                     channelName: user.uid,
+          //                                   )))
+          //           ),
+          //         ],
+          //       ),
+          // );
+
           // Scaffold.of(context).showSnackBar(snackbar);
-          return showDialog(
+
+          if(type == "Message" && displayMessage != true) {
+            return showDialog(
             context: context,
             builder: (context) => AlertDialog(
                   content: ListTile(
@@ -75,6 +108,30 @@ class _MessageHandleState extends State<MessageHandle> {
                   ],
                 ),
           );
+          } 
+          if(type == "Call") {
+            return showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  content: ListTile(
+                    title: Text(message['notification']['title']),
+                    subtitle: Text(message['notification']['body']),
+                  ),
+                  actions: <Widget>[
+                    FlatButton(
+                      color: Colors.blue,
+                      child: Text('Join'),
+                      onPressed: () => Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CallPage(
+                                              channelName: uid.toString(),
+                                            )))
+                    ),
+                  ],
+                ),
+          );
+          } 
         },
         onLaunch: (Map<String, dynamic> message) async {
           print("onLaunch: $message");

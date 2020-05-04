@@ -47,11 +47,65 @@ export const sendToDevice = functions.firestore
                 body: message.content,
                 icon: 'your-icon-url',
                 click_action: 'FLUTTER_NOTIFICATION_CLICK'
+            },
+            data: {
+                type: "Message",
             }
         };
 
         return fcm.sendToDevice(tokens, payload);
         
+        } else {
+            return undefined
+        }
+    });
+
+export const sendCallToDevice = functions.firestore
+    .document('calls/{groupVideoId}/{videoId}/{call}')
+    .onCreate(async (snapshot: { data: () => any; }) => {
+
+
+        const message = snapshot.data();
+        if (message != null) {
+            const querySnapshot = await db
+                .collection('messages')
+                .doc(message.callTo)
+                .collection('tokens')
+                .get();
+
+            //console.log(querySnapshot);
+
+
+            // functions.firestore
+            //     .document('messages/{user}').onCreate(async (snapshot: { data: () => any; }) => {
+            //         const personFrom = snapshot.data();
+            //     }
+
+            // var personFromData = personFrom.data();
+
+
+
+            //const personFrom = await db.collection('messages').doc(message.idFrom).get();
+            //const data = (await personFrom).data; 
+
+            //var name = data.nickname;
+
+            const tokens = querySnapshot.docs.map((snap: { id: any; }) => snap.id);
+
+            const payload: admin.messaging.MessagingPayload = {
+                notification: {
+                    title: "Call from " + message.callFromName + "!",
+                    body: "Join Now",
+                    icon: 'your-icon-url',
+                    click_action: 'FLUTTER_NOTIFICATION_CLICK'
+                },
+                data: {
+                    type: "Call",
+                }
+            };
+
+            return fcm.sendToDevice(tokens, payload);
+
         } else {
             return undefined
         }

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:day12_login/Communication/Video_Chat/app_id.dart';
 import 'package:day12_login/Screens/home.dart';
+// import CameraOffIcon from 'package:day12_login/no_camera.dart';
 
 class CallPage extends StatefulWidget {
   /// non-modifiable channel name of the page
@@ -227,7 +228,15 @@ class _CallPageState extends State<CallPage> {
             elevation: 2.0,
             fillColor: Colors.white,
             padding: const EdgeInsets.all(12.0),
-          )
+          ),
+          // RawMaterialButton(
+          //   onPressed: _onSwitchCamera,
+          //   child:  Icon(CameraOffIcon.camera_off),
+          //   shape: CircleBorder(),
+          //   elevation: 2.0,
+          //   fillColor: Colors.white,
+          //   padding: const EdgeInsets.all(12.0),
+          // )
         ],
       ),
     );

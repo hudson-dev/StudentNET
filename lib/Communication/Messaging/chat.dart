@@ -14,6 +14,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:day12_login/Notifications/videoHandler.dart';
+import 'package:day12_login/Notifications/messageHandler.dart';
 import 'dart:developer' as developer;
 
 import 'package:day12_login/Communication/Video_Chat/call.dart';
@@ -34,6 +36,7 @@ class Chat extends StatelessWidget {
     bool beingCalled;
     String chattingWith, createdAt, id, nickname, photoUrl;
     var peerName;
+    String groupVideoId;
 
     return StreamBuilder<DocumentSnapshot>(
         stream: Firestore.instance
@@ -52,6 +55,12 @@ class Chat extends StatelessWidget {
             nickname = messageData['nickname'];
             photoUrl = messageData['photoUrl'];
 
+            if (id.hashCode <= peerId.hashCode) {
+              groupVideoId = '$id-$peerId';
+            } else {
+              groupVideoId = '$peerId-$id';
+            }
+
     Person user = Provider.of<Person>(context);
             return Scaffold(
               appBar: AppBar(
@@ -68,20 +77,39 @@ class Chat extends StatelessWidget {
                           padding: EdgeInsets.only(right: 20.0),
                           child: GestureDetector(
                               onTap: () {
-                                Firestore.instance
-                                    .collection('messages')
-                                    .document(peerId)
-                                    .updateData({'beingCalled': true});
-                                var beingCalled =
-                                    Database(uid: user.uid).call(peerId);
-                                print(beingCalled);
+
+                                 var documentReference = Firestore.instance
+                                    .collection('calls')
+                                    .document(groupVideoId)
+                                    .collection(groupVideoId)
+                                    .document(DateTime.now().millisecondsSinceEpoch.toString());
+
+                                Firestore.instance.runTransaction((transaction) async {
+                                  await transaction.set(
+                                    documentReference,
+                                    {
+                                      'callFrom': id,
+                                      'callTo': peerId,
+                                      'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
+                                      'callFromName': username,
+                                    },
+                                  );
+                                });
+
+                                // Firestore.instance
+                                //     .collection('messages')
+                                //     .document(peerId)
+                                //     .updateData({'beingCalled': true});
+                                // var beingCalled =
+                                //     Database(uid: user.uid).call(peerId);
+                                // print(beingCalled);
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => CallPage(
-                                              channelName: peerId,
+                                              channelName: id,
                                             )));
-                              },
+                              },  
                               child: Icon(Icons.video_call, size: 26.0))),
                       Padding(
                         padding: const EdgeInsets.only(right: 0.0),
@@ -192,10 +220,6 @@ class ChatScreenState extends State<ChatScreen> {
 
     id = user.uid;
 
-
-
-
-
     if (id.hashCode <= peerId.hashCode) {
       groupChatId = '$id-$peerId';
     } else {
@@ -206,6 +230,11 @@ class ChatScreenState extends State<ChatScreen> {
         .collection('messages')
         .document(id)
         .updateData({'chattingWith': peerId});
+
+    Firestore.instance
+        .collection('messages')
+        .document(peerId)
+        .updateData({'chattingWith': id});
 
     setState(() {});
   }
@@ -254,6 +283,8 @@ class ChatScreenState extends State<ChatScreen> {
     if (content.trim() != '') {
       textEditingController.clear();
       copyDocument(peerId);
+
+      print(groupChatId);
 
       var documentReference = Firestore.instance
           .collection('messages')
@@ -568,6 +599,10 @@ class ChatScreenState extends State<ChatScreen> {
     return WillPopScope(
       child: Stack(
         children: <Widget>[
+          SizedBox(
+                height: 50,
+                child: MessageHandle(id, true),
+          ), 
           Column(
             children: <Widget>[
               // List of messages

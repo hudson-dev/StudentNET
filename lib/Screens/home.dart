@@ -14,6 +14,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:day12_login/Communication/Video_Chat/call.dart';
+import 'package:day12_login/Notifications/videoHandler.dart';
+
 void main() => runApp(Home());
 /// This Widget is the main application widget.
 class Home extends StatefulWidget {
@@ -77,7 +79,7 @@ class _HomeState extends State<Home> {
              children: <Widget>[
               SizedBox(
                 height: 50,
-                child: MessageHandle(user.uid),
+                child: MessageHandle(user.uid, false),
               ), 
               Row(
                  children: <Widget>[

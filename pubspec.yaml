@@ -82,7 +82,12 @@ flutter:
      - images/mimi7.gif
      - images/mimi8.gif
      - images/mimi9.gif
-     
+  # fonts:
+  #    - family: Socicon
+  #      fonts: 
+  #       - asset: assets/fonts/MyFlutterApp.ttf
+  
+
    
   
   #  - images/a_dot_ham.jpeg
