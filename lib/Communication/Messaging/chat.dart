@@ -103,11 +103,11 @@ class Chat extends StatelessWidget {
                                 // var beingCalled =
                                 //     Database(uid: user.uid).call(peerId);
                                 // print(beingCalled);
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => CallPage(
-                                              channelName: id,
+                                                                Navigator.pushReplacement(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder: (context) => CallPage(
+                                                                              channelName: groupVideoId,
                                             )));
                               },  
                               child: Icon(Icons.video_call, size: 26.0))),
@@ -601,7 +601,7 @@ class ChatScreenState extends State<ChatScreen> {
         children: <Widget>[
           SizedBox(
                 height: 50,
-                child: MessageHandle(id, true),
+                child: MessageHandle(groupChatId, true),
           ), 
           Column(
             children: <Widget>[
