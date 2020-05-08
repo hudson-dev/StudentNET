@@ -17,6 +17,7 @@ class MessageHandle extends StatefulWidget {
 
   String uid;
   bool displayMessage;
+  String callId;
 
   MessageHandle(this.uid, this.displayMessage);
 
@@ -125,7 +126,7 @@ class _MessageHandleState extends State<MessageHandle> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => CallPage(
-                                              channelName: uid.toString(),
+                                              channelName: uid,
                                             )))
                     ),
                   ],

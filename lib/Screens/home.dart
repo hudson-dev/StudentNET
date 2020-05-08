@@ -79,7 +79,7 @@ class _HomeState extends State<Home> {
              children: <Widget>[
               SizedBox(
                 height: 50,
-                child: MessageHandle(user.uid, false),
+                child: MessageHandle(user.uid, false)
               ), 
               Row(
                  children: <Widget>[

@@ -132,6 +132,7 @@ class Chat extends StatelessWidget {
                 peerAvatar: peerAvatar,
                 context: context,
                 username: username,
+                groupVideoId: groupVideoId
               ),
               
             );
@@ -148,18 +149,19 @@ class ChatScreen extends StatefulWidget {
   final String peerAvatar;
   final String username;
   BuildContext context;
+  final String groupVideoId;
 
   ChatScreen(
       {Key key,
       @required this.peerId,
       @required this.peerAvatar,
       @required this.username,
-      @required this.context})
+      @required this.context, @required this.groupVideoId})
       : super(key: key);
 
   @override
   State createState() => new ChatScreenState(
-      peerId: peerId, peerAvatar: peerAvatar, context: context, username: username);
+      peerId: peerId, peerAvatar: peerAvatar, context: context, username: username, groupVideoId: groupVideoId);
 }
 
 class ChatScreenState extends State<ChatScreen> {
@@ -167,8 +169,9 @@ class ChatScreenState extends State<ChatScreen> {
       {Key key,
       @required this.peerId,
       @required this.peerAvatar,
-      @required this.context,  @required this.username});
+      @required this.context,  @required this.username, @required this.groupVideoId});
 
+  String groupVideoId;
   BuildContext context;
   String peerId;
   String peerAvatar;
@@ -601,7 +604,7 @@ class ChatScreenState extends State<ChatScreen> {
         children: <Widget>[
           SizedBox(
                 height: 50,
-                child: MessageHandle(groupChatId, true),
+                child: MessageHandle(groupVideoId, true),
           ), 
           Column(
             children: <Widget>[
